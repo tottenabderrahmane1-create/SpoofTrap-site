@@ -3,13 +3,13 @@ const macosFallbackRelease = {
   generatedAt: "2026-03-29T16:47:05Z",
   artifacts: {
     pkg: {
-      file: "SpoofTrap-macOS-2026.03.31.1.pkg",
+      file: "SpoofTrap.pkg",
     },
     zip: {
-      file: "SpoofTrap-macOS-2026.03.31.1.zip",
+      file: "SpoofTrap.zip",
     },
     dmg: {
-      file: "SpoofTrap-macOS-2026.03.31.1.dmg",
+      file: "SpoofTrap.dmg",
     },
   },
 };
