@@ -97,6 +97,10 @@ final class BypassViewModel: ObservableObject {
     @Published private(set) var resolvedBinaryPath: String?
     @Published private(set) var binaryAvailable = false
     @Published var fastFlagsManager = FastFlagsManager()
+    
+    // Pro Features
+    @Published var proManager = ProManager()
+    @Published var sessionStats = SessionStats()
 
     private let proxyAddress = "127.0.0.1:8080"
     private let proxyURL = "http://127.0.0.1:8080"
@@ -342,6 +346,8 @@ final class BypassViewModel: ObservableObject {
                 appendLog("Warning: Failed to apply FastFlags")
             }
         }
+        
+        sessionStats.startSession(proxyMode: proxyScope.rawValue, preset: preset.rawValue)
 
         Task {
             await runPKill()
@@ -356,6 +362,8 @@ final class BypassViewModel: ObservableObject {
         launchTask?.cancel()
         launchTask = nil
         appendLog("Stopping SpoofTrap session.")
+        
+        sessionStats.endSession()
 
         if let process = spoofProcess, process.isRunning {
             process.terminate()
@@ -514,11 +522,13 @@ final class BypassViewModel: ObservableObject {
 
     private func launchRobloxWave(label: String) {
         appendLog(label)
+        sessionStats.recordLaunch()
 
         if proxyScope == .system {
             let result = runTool("/usr/bin/open", ["-n", "-a", robloxAppPath])
             if result.status == 0 {
                 appendLog("Roblox launched using system proxy mode.")
+                sessionStats.markSuccess()
             } else {
                 appendLog("Roblox launch failed: \(result.output.isEmpty ? "open returned \(result.status)." : result.output)")
             }
@@ -555,11 +565,13 @@ final class BypassViewModel: ObservableObject {
         do {
             try process.run()
             appendLog("Roblox launched with proxy environment (PID: \(process.processIdentifier)).")
+            sessionStats.markSuccess()
         } catch {
             appendLog("Failed to launch Roblox: \(error.localizedDescription)")
             let fallbackResult = runTool("/usr/bin/open", ["-n", "-a", robloxAppPath])
             if fallbackResult.status == 0 {
                 appendLog("Fallback: Roblox launched via open command.")
+                sessionStats.markSuccess()
             }
         }
     }

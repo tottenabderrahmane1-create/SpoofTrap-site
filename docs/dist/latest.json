@@ -1,21 +1,26 @@
 {
-  "name": "SpoofTrap",
-  "version": "2026.03.29.1",
-  "bundleIdentifier": "com.spooftrap.app",
-  "generatedAt": "2026-03-29T16:47:05Z",
-  "bundledSpoofdpi": "bundled",
-  "artifacts": {
+  "version": "2026.03.31.1",
+  "releaseDate": "2026-03-31",
+  "downloads": {
     "zip": {
-      "file": "SpoofTrap-macOS-2026.03.29.1.zip",
-      "sha256": "29e94aadc014eabcf1bf02337874270cfe29da024d2cdd14cca163d5a1c7e549"
+      "url": "https://github.com/28atotten/SpoofTrapMain/releases/download/v2026.03.31.1/SpoofTrap.zip",
+      "sha256": "8951d28f0e1888de8206285582cfc212308fc6b7091dd8d6d56c563cd33262ac"
     },
     "pkg": {
-      "file": "SpoofTrap-macOS-2026.03.29.1.pkg",
-      "sha256": "eb84953d1c7abcbda8c4001a5149b211185b45bb2901af231d9c7f143823ecd4"
+      "url": "https://github.com/28atotten/SpoofTrapMain/releases/download/v2026.03.31.1/SpoofTrap.pkg",
+      "sha256": "c4cbdbea1579167f631d743ddb5ac2756c393f349de63482e042a755006d3df8"
     },
     "dmg": {
-      "file": "SpoofTrap-macOS-2026.03.29.1.dmg",
-      "sha256": "3a717512976872f175c96f7aab58193d0966c35be9434e6e6d5b0f3f64596d8f"
+      "url": "https://github.com/28atotten/SpoofTrapMain/releases/download/v2026.03.31.1/SpoofTrap.dmg",
+      "sha256": "d49c437d7f7be849e37b4528a9b8384d8661f57175c955c321b25f6c2782a358"
     }
-  }
+  },
+  "changelog": [
+    "Added license key activation system",
+    "Pro features now require valid license",
+    "Added license info display and deactivation",
+    "Improved UI with PRO badge indicator",
+    "Backend powered by Supabase"
+  ],
+  "minimumOS": "13.0"
 }

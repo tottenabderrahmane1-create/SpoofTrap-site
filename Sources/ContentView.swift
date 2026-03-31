@@ -11,6 +11,7 @@ struct ContentView: View {
     @State private var splashGlow = false
     @State private var showingAdvanced = false
     @State private var showingFastFlags = false
+    @State private var showingStats = false
     @State private var copyConfirmation = false
 
     var body: some View {
@@ -71,12 +72,20 @@ struct ContentView: View {
                 settingsCard
                 fastFlagsCard
                 
-                if showingAdvanced {
-                    advancedCard
-                }
-                
-                if showingFastFlags {
-                    fastFlagsDetailCard
+                if viewModel.proManager.isPro {
+                    if showingAdvanced {
+                        advancedCard
+                    }
+                    
+                    if showingFastFlags {
+                        fastFlagsDetailCard
+                    }
+                    
+                    if showingStats {
+                        statsCard
+                    }
+                } else {
+                    upgradeCard
                 }
             }
             .padding(.vertical, 2)
@@ -88,22 +97,97 @@ struct ContentView: View {
         .animation(.spring(response: 0.9, dampingFraction: 0.88).delay(0.1), value: introVisible)
     }
 
+    @State private var showingLicenseInfo: Bool = false
+    
     private var headerCard: some View {
         glassCard {
-            HStack(spacing: 14) {
-                logoTile(size: 56)
+            VStack(spacing: 12) {
+                HStack(spacing: 14) {
+                    logoTile(size: 56)
 
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("SpoofTrap")
-                        .font(.system(size: 20, weight: .bold, design: .rounded))
-                        .foregroundStyle(.white)
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack(spacing: 6) {
+                            Text("SpoofTrap")
+                                .font(.system(size: 20, weight: .bold, design: .rounded))
+                                .foregroundStyle(.white)
+                            
+                            if viewModel.proManager.isPro {
+                                Text("PRO")
+                                    .font(.system(size: 9, weight: .heavy, design: .rounded))
+                                    .foregroundStyle(.black)
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(
+                                        LinearGradient(colors: [.yellow, .orange], startPoint: .leading, endPoint: .trailing)
+                                    )
+                                    .clipShape(Capsule())
+                            }
+                        }
 
-                    Text("Roblox bypass launcher")
-                        .font(.system(size: 13, weight: .medium, design: .rounded))
-                        .foregroundStyle(.white.opacity(0.55))
+                        Text("Roblox bypass launcher")
+                            .font(.system(size: 13, weight: .medium, design: .rounded))
+                            .foregroundStyle(.white.opacity(0.55))
+                    }
+
+                    Spacer()
+                    
+                    if viewModel.proManager.isPro {
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                showingLicenseInfo.toggle()
+                            }
+                        } label: {
+                            Image(systemName: "info.circle")
+                                .font(.system(size: 14))
+                                .foregroundStyle(.white.opacity(0.5))
+                        }
+                        .buttonStyle(.plain)
+                    }
                 }
-
-                Spacer()
+                
+                if showingLicenseInfo, let license = viewModel.proManager.licenseManager.currentLicense {
+                    Divider().background(.white.opacity(0.15))
+                    
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack {
+                            Text("License:")
+                                .font(.system(size: 11, weight: .medium, design: .rounded))
+                                .foregroundStyle(.white.opacity(0.5))
+                            Text(license.licenseKey)
+                                .font(.system(size: 10, weight: .medium, design: .monospaced))
+                                .foregroundStyle(.white.opacity(0.7))
+                        }
+                        
+                        HStack {
+                            Text("Plan:")
+                                .font(.system(size: 11, weight: .medium, design: .rounded))
+                                .foregroundStyle(.white.opacity(0.5))
+                            Text(license.plan.capitalized)
+                                .font(.system(size: 11, weight: .semibold, design: .rounded))
+                                .foregroundStyle(.cyan)
+                            
+                            Spacer()
+                            
+                            Button {
+                                deactivateLicense()
+                            } label: {
+                                Text("Deactivate")
+                                    .font(.system(size: 10, weight: .medium, design: .rounded))
+                                    .foregroundStyle(.red.opacity(0.8))
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func deactivateLicense() {
+        Task {
+            await viewModel.proManager.deactivate()
+            await MainActor.run {
+                showingLicenseInfo = false
             }
         }
     }
@@ -111,19 +195,32 @@ struct ContentView: View {
     private var settingsCard: some View {
         glassCard {
             VStack(alignment: .leading, spacing: 16) {
-                HStack {
+                HStack(spacing: 10) {
                     sectionTitle("Settings")
                     Spacer()
-                    Button {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            showingAdvanced.toggle()
+                    if viewModel.proManager.isPro {
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                showingStats.toggle()
+                            }
+                        } label: {
+                            Image(systemName: "chart.bar.fill")
+                                .font(.system(size: 12))
+                                .foregroundStyle(showingStats ? .purple : .white.opacity(0.4))
                         }
-                    } label: {
-                        Text(showingAdvanced ? "Less" : "More")
-                            .font(.system(size: 12, weight: .semibold, design: .rounded))
-                            .foregroundStyle(.white.opacity(0.5))
+                        .buttonStyle(.plain)
+                        
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                showingAdvanced.toggle()
+                            }
+                        } label: {
+                            Image(systemName: "gearshape.fill")
+                                .font(.system(size: 12))
+                                .foregroundStyle(showingAdvanced ? .cyan : .white.opacity(0.4))
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
 
                 VStack(alignment: .leading, spacing: 6) {
@@ -233,16 +330,30 @@ struct ContentView: View {
                 HStack {
                     sectionTitle("FastFlags")
                     Spacer()
-                    Button {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            showingFastFlags.toggle()
-                        }
-                    } label: {
-                        Text(showingFastFlags ? "Hide" : "Edit")
+                    if viewModel.proManager.isPro {
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                showingFastFlags.toggle()
+                            }
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "flag.fill")
+                                    .font(.system(size: 10))
+                                Text(showingFastFlags ? "Hide" : "Edit")
+                            }
                             .font(.system(size: 12, weight: .semibold, design: .rounded))
-                            .foregroundStyle(.white.opacity(0.5))
+                            .foregroundStyle(.cyan.opacity(0.8))
+                        }
+                        .buttonStyle(.plain)
+                    } else {
+                        HStack(spacing: 4) {
+                            Image(systemName: "lock.fill")
+                                .font(.system(size: 9))
+                            Text("Pro")
+                        }
+                        .font(.system(size: 11, weight: .semibold, design: .rounded))
+                        .foregroundStyle(.yellow.opacity(0.7))
                     }
-                    .buttonStyle(.plain)
                 }
 
                 settingRow(label: "Enable FastFlags") {
@@ -396,6 +507,232 @@ struct ContentView: View {
         .background(
             RoundedRectangle(cornerRadius: 10, style: .continuous)
                 .fill(Color.white.opacity(0.05))
+        )
+    }
+
+    // MARK: - Pro Features
+    
+    @State private var licenseKeyInput: String = ""
+    @State private var isActivating: Bool = false
+    @State private var activationError: String?
+    
+    private var upgradeCard: some View {
+        glassCard {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack(spacing: 8) {
+                    Image(systemName: "star.fill")
+                        .font(.system(size: 14))
+                        .foregroundStyle(.yellow)
+                    Text("Upgrade to Pro")
+                        .font(.system(size: 16, weight: .bold, design: .rounded))
+                        .foregroundStyle(.white)
+                }
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    upgradeFeatureRow(icon: "slider.horizontal.3", text: "Fast & Custom presets")
+                    upgradeFeatureRow(icon: "flag.fill", text: "Full FastFlags editor")
+                    upgradeFeatureRow(icon: "gearshape.2.fill", text: "Advanced settings")
+                    upgradeFeatureRow(icon: "chart.bar.fill", text: "Detailed session stats")
+                }
+                
+                Divider().background(.white.opacity(0.2))
+                
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Enter License Key")
+                        .font(.system(size: 12, weight: .semibold, design: .rounded))
+                        .foregroundStyle(.white.opacity(0.7))
+                    
+                    TextField("STXXX-XXXXX-XXXXX-XXXXX-XXXXX", text: $licenseKeyInput)
+                        .textFieldStyle(.plain)
+                        .font(.system(size: 13, weight: .medium, design: .monospaced))
+                        .foregroundStyle(.white)
+                        .padding(10)
+                        .background(.white.opacity(0.08))
+                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .strokeBorder(.white.opacity(0.15), lineWidth: 1)
+                        )
+                        .disabled(isActivating)
+                    
+                    if let error = activationError ?? viewModel.proManager.licenseManager.validationError {
+                        Text(error)
+                            .font(.system(size: 11, weight: .medium, design: .rounded))
+                            .foregroundStyle(.red.opacity(0.9))
+                    }
+                    
+                    Button {
+                        activateLicense()
+                    } label: {
+                        HStack {
+                            if isActivating {
+                                ProgressView()
+                                    .scaleEffect(0.7)
+                                    .tint(.black)
+                            } else {
+                                Image(systemName: "key.fill")
+                                    .font(.system(size: 12))
+                            }
+                            Text(isActivating ? "Activating..." : "Activate License")
+                                .font(.system(size: 13, weight: .bold, design: .rounded))
+                        }
+                        .foregroundStyle(.black)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(
+                            LinearGradient(
+                                colors: [.yellow, .orange],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .opacity(licenseKeyInput.isEmpty || isActivating ? 0.6 : 1)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(licenseKeyInput.isEmpty || isActivating)
+                }
+            }
+        }
+    }
+    
+    private func activateLicense() {
+        guard !licenseKeyInput.isEmpty else { return }
+        
+        isActivating = true
+        activationError = nil
+        
+        Task {
+            let success = await viewModel.proManager.activate(key: licenseKeyInput)
+            
+            await MainActor.run {
+                isActivating = false
+                if !success {
+                    activationError = viewModel.proManager.licenseManager.validationError
+                } else {
+                    licenseKeyInput = ""
+                }
+            }
+        }
+    }
+    
+    private func upgradeFeatureRow(icon: String, text: String) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: icon)
+                .font(.system(size: 11))
+                .foregroundStyle(.cyan)
+                .frame(width: 16)
+            Text(text)
+                .font(.system(size: 12, weight: .medium, design: .rounded))
+                .foregroundStyle(.white.opacity(0.8))
+        }
+    }
+    
+    private var statsCard: some View {
+        glassCard {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack {
+                    HStack(spacing: 6) {
+                        Image(systemName: "chart.bar.fill")
+                            .font(.system(size: 12))
+                            .foregroundStyle(.purple)
+                        Text("Session Stats")
+                            .font(.system(size: 14, weight: .bold, design: .rounded))
+                            .foregroundStyle(.white)
+                    }
+                    Spacer()
+                    if viewModel.sessionStats.isActive {
+                        HStack(spacing: 4) {
+                            Circle()
+                                .fill(.green)
+                                .frame(width: 6, height: 6)
+                            Text("Live")
+                                .font(.system(size: 10, weight: .semibold, design: .rounded))
+                                .foregroundStyle(.green)
+                        }
+                    }
+                }
+                
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                    statTile(
+                        icon: "clock.fill",
+                        label: "Current",
+                        value: viewModel.sessionStats.currentDuration,
+                        color: .cyan
+                    )
+                    statTile(
+                        icon: "play.fill",
+                        label: "Launches",
+                        value: "\(viewModel.sessionStats.currentLaunches)",
+                        color: .green
+                    )
+                    statTile(
+                        icon: "calendar",
+                        label: "Today",
+                        value: viewModel.sessionStats.todayPlayTimeFormatted,
+                        color: .orange
+                    )
+                    statTile(
+                        icon: "checkmark.circle",
+                        label: "Success",
+                        value: viewModel.sessionStats.successRateFormatted,
+                        color: .mint
+                    )
+                }
+                
+                Divider()
+                    .background(Color.white.opacity(0.1))
+                
+                HStack(spacing: 20) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Total Sessions")
+                            .font(.system(size: 10, weight: .medium, design: .rounded))
+                            .foregroundStyle(.white.opacity(0.5))
+                        Text("\(viewModel.sessionStats.totalSessions)")
+                            .font(.system(size: 16, weight: .bold, design: .rounded))
+                            .foregroundStyle(.white)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Total Play Time")
+                            .font(.system(size: 10, weight: .medium, design: .rounded))
+                            .foregroundStyle(.white.opacity(0.5))
+                        Text(viewModel.sessionStats.totalPlayTimeFormatted)
+                            .font(.system(size: 16, weight: .bold, design: .rounded))
+                            .foregroundStyle(.white)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Avg Session")
+                            .font(.system(size: 10, weight: .medium, design: .rounded))
+                            .foregroundStyle(.white.opacity(0.5))
+                        Text(viewModel.sessionStats.averageSessionFormatted)
+                            .font(.system(size: 16, weight: .bold, design: .rounded))
+                            .foregroundStyle(.white)
+                    }
+                }
+            }
+        }
+        .transition(.opacity.combined(with: .move(edge: .top)))
+    }
+    
+    private func statTile(icon: String, label: String, value: String, color: Color) -> some View {
+        VStack(spacing: 4) {
+            Image(systemName: icon)
+                .font(.system(size: 14))
+                .foregroundStyle(color)
+            Text(value)
+                .font(.system(size: 14, weight: .bold, design: .rounded))
+                .foregroundStyle(.white)
+            Text(label)
+                .font(.system(size: 9, weight: .medium, design: .rounded))
+                .foregroundStyle(.white.opacity(0.4))
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 10)
+        .background(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(color.opacity(0.08))
         )
     }
 
@@ -695,23 +1032,39 @@ struct ContentView: View {
     }
 
     private var presetPicker: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: 3) {
             ForEach(BypassViewModel.ProxyPreset.allCases) { preset in
+                let isProOnly = preset == .fast || preset == .custom
+                let isLocked = isProOnly && !viewModel.proManager.isPro
+                
                 Button {
-                    viewModel.applyPreset(preset)
+                    if !isLocked {
+                        viewModel.applyPreset(preset)
+                    }
                 } label: {
-                    Text(preset.title)
-                        .font(.system(size: 11, weight: .semibold, design: .rounded))
-                        .foregroundStyle(viewModel.preset == preset ? .black.opacity(0.8) : .white.opacity(0.6))
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .background(
-                            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                .fill(viewModel.preset == preset ? Color.white : Color.clear)
-                        )
+                    HStack(spacing: 3) {
+                        Text(preset.title)
+                            .lineLimit(1)
+                            .fixedSize(horizontal: true, vertical: false)
+                        if isLocked {
+                            Image(systemName: "lock.fill")
+                                .font(.system(size: 7))
+                        }
+                    }
+                    .font(.system(size: 10, weight: .semibold, design: .rounded))
+                    .foregroundStyle(
+                        isLocked ? .white.opacity(0.35) :
+                        viewModel.preset == preset ? .black.opacity(0.8) : .white.opacity(0.6)
+                    )
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 6)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .fill(viewModel.preset == preset && !isLocked ? Color.white : Color.clear)
+                    )
                 }
                 .buttonStyle(.plain)
-                .disabled(viewModel.isRunning)
+                .disabled(viewModel.isRunning || isLocked)
             }
         }
         .padding(3)
