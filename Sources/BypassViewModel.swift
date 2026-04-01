@@ -71,6 +71,7 @@ final class BypassViewModel: ObservableObject {
         var httpsChunkSize: Int
         var httpsDisorder: Bool
         var appLaunchDelay: Int
+        var reducedMotion: Bool?
     }
 
     private struct SystemProxyState {
@@ -94,6 +95,7 @@ final class BypassViewModel: ObservableObject {
     @Published private(set) var httpsChunkSize = 1
     @Published private(set) var httpsDisorder = true
     @Published private(set) var appLaunchDelay = 0
+    @Published private(set) var reducedMotion = false
     @Published private(set) var resolvedBinaryPath: String?
     @Published private(set) var binaryAvailable = false
     @Published var fastFlagsManager = FastFlagsManager()
@@ -249,6 +251,11 @@ final class BypassViewModel: ObservableObject {
     func setHTTPSDisorder(_ newValue: Bool) {
         httpsDisorder = newValue
         markCustomSettings()
+    }
+
+    func setReducedMotion(_ newValue: Bool) {
+        reducedMotion = newValue
+        persistSettings()
     }
 
     func chooseRobloxApp() {
@@ -813,6 +820,7 @@ final class BypassViewModel: ObservableObject {
         httpsChunkSize = stored.httpsChunkSize
         httpsDisorder = stored.httpsDisorder
         appLaunchDelay = stored.appLaunchDelay
+        reducedMotion = stored.reducedMotion ?? false
     }
 
     private func persistSettings() {
@@ -827,7 +835,8 @@ final class BypassViewModel: ObservableObject {
             dnsHttpsURL: dnsHttpsURL,
             httpsChunkSize: httpsChunkSize,
             httpsDisorder: httpsDisorder,
-            appLaunchDelay: appLaunchDelay
+            appLaunchDelay: appLaunchDelay,
+            reducedMotion: reducedMotion
         )
 
         do {

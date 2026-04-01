@@ -348,6 +348,26 @@ struct ContentView: View {
                             .disabled(viewModel.isRunning)
                     }
                 }
+                
+                Divider()
+                    .background(Color.white.opacity(0.1))
+                
+                settingRow(label: "Reduce Motion") {
+                    Toggle("", isOn: Binding(
+                        get: { viewModel.reducedMotion },
+                        set: { viewModel.setReducedMotion($0) }
+                    ))
+                    .labelsHidden()
+                    .toggleStyle(.switch)
+                    .controlSize(.small)
+                    .tint(.orange)
+                }
+                
+                if !viewModel.reducedMotion {
+                    Text("Disable animations for better performance")
+                        .font(.system(size: 10, weight: .medium, design: .rounded))
+                        .foregroundStyle(.white.opacity(0.4))
+                }
             }
         }
         .transition(.opacity.combined(with: .move(edge: .top)))
@@ -794,6 +814,7 @@ struct ContentView: View {
                     pulse: pulse,
                     actionTint: actionTint,
                     isDisabled: (!viewModel.binaryAvailable || !viewModel.robloxInstalled) && !viewModel.isRunning,
+                    reducedMotion: viewModel.reducedMotion,
                     action: viewModel.toggleBypass
                 )
 
@@ -990,7 +1011,7 @@ struct ContentView: View {
     // MARK: - Components
 
     private func glassCard<Content: View>(accent: Bool = false, @ViewBuilder content: @escaping () -> Content) -> some View {
-        GlassCardView(accent: accent, content: content)
+        GlassCardView(accent: accent, reducedMotion: viewModel.reducedMotion, content: content)
     }
 }
 
@@ -998,6 +1019,7 @@ struct ContentView: View {
 
 struct GlassCardView<Content: View>: View {
     let accent: Bool
+    let reducedMotion: Bool
     @ViewBuilder let content: () -> Content
     @State private var isHovering = false
     
@@ -1012,22 +1034,24 @@ struct GlassCardView<Content: View>: View {
                     .fill(
                         LinearGradient(
                             colors: accent
-                                ? [Color.white.opacity(isHovering ? 0.12 : 0.10), Color.white.opacity(isHovering ? 0.08 : 0.06)]
-                                : [Color.white.opacity(isHovering ? 0.10 : 0.08), Color.white.opacity(isHovering ? 0.07 : 0.05)],
+                                ? [Color.white.opacity(reducedMotion ? 0.10 : (isHovering ? 0.12 : 0.10)), Color.white.opacity(reducedMotion ? 0.06 : (isHovering ? 0.08 : 0.06))]
+                                : [Color.white.opacity(reducedMotion ? 0.08 : (isHovering ? 0.10 : 0.08)), Color.white.opacity(reducedMotion ? 0.05 : (isHovering ? 0.07 : 0.05))],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
                     )
                 
-                RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .fill(
-                        RadialGradient(
-                            colors: [Color.white.opacity(isHovering ? 0.05 : 0), Color.clear],
-                            center: .topLeading,
-                            startRadius: 0,
-                            endRadius: 200
+                if !reducedMotion {
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .fill(
+                            RadialGradient(
+                                colors: [Color.white.opacity(isHovering ? 0.05 : 0), Color.clear],
+                                center: .topLeading,
+                                startRadius: 0,
+                                endRadius: 200
+                            )
                         )
-                    )
+                }
             }
         )
         .overlay(
@@ -1035,8 +1059,8 @@ struct GlassCardView<Content: View>: View {
                 .stroke(
                     LinearGradient(
                         colors: [
-                            Color.white.opacity(isHovering ? 0.18 : accent ? 0.12 : 0.08),
-                            Color.white.opacity(isHovering ? 0.10 : accent ? 0.06 : 0.04)
+                            Color.white.opacity(reducedMotion ? (accent ? 0.12 : 0.08) : (isHovering ? 0.18 : accent ? 0.12 : 0.08)),
+                            Color.white.opacity(reducedMotion ? (accent ? 0.06 : 0.04) : (isHovering ? 0.10 : accent ? 0.06 : 0.04))
                         ],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
@@ -1044,11 +1068,13 @@ struct GlassCardView<Content: View>: View {
                     lineWidth: 1
                 )
         )
-        .shadow(color: Color.black.opacity(isHovering ? 0.25 : 0.2), radius: isHovering ? 24 : 20, y: isHovering ? 12 : 10)
-        .scaleEffect(isHovering ? 1.005 : 1.0)
-        .animation(.easeOut(duration: 0.2), value: isHovering)
+        .shadow(color: Color.black.opacity(0.2), radius: 20, y: 10)
+        .scaleEffect(reducedMotion ? 1.0 : (isHovering ? 1.005 : 1.0))
+        .animation(reducedMotion ? nil : .easeOut(duration: 0.2), value: isHovering)
         .onHover { hovering in
-            isHovering = hovering
+            if !reducedMotion {
+                isHovering = hovering
+            }
         }
     }
 }
@@ -1077,19 +1103,21 @@ extension ContentView {
                 .fill(active ? Color.green : Color.red.opacity(0.8))
                 .frame(width: 8, height: 8)
             
-            Circle()
-                .fill(
-                    RadialGradient(
-                        colors: [Color.white.opacity(0.6), Color.clear],
-                        center: .topLeading,
-                        startRadius: 0,
-                        endRadius: 4
+            if !viewModel.reducedMotion {
+                Circle()
+                    .fill(
+                        RadialGradient(
+                            colors: [Color.white.opacity(0.6), Color.clear],
+                            center: .topLeading,
+                            startRadius: 0,
+                            endRadius: 4
+                        )
                     )
-                )
-                .frame(width: 8, height: 8)
+                    .frame(width: 8, height: 8)
+            }
         }
-        .shadow(color: (active ? Color.green : Color.red).opacity(pulse ? 0.7 : 0.4), radius: pulse ? 6 : 4)
-        .animation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: pulse)
+        .shadow(color: (active ? Color.green : Color.red).opacity(viewModel.reducedMotion ? 0.5 : (pulse ? 0.7 : 0.4)), radius: viewModel.reducedMotion ? 4 : (pulse ? 6 : 4))
+        .animation(viewModel.reducedMotion ? nil : .easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: pulse)
     }
 
     private func quickStat(label: String, value: String) -> some View {
@@ -1138,8 +1166,12 @@ extension ContentView {
                 
                 Button {
                     if !isLocked {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        if viewModel.reducedMotion {
                             viewModel.applyPreset(preset)
+                        } else {
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                viewModel.applyPreset(preset)
+                            }
                         }
                     }
                 } label: {
@@ -1168,12 +1200,12 @@ extension ContentView {
                             }
                         }
                     )
-                    .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSelected)
+                    .animation(viewModel.reducedMotion ? nil : .spring(response: 0.3, dampingFraction: 0.7), value: isSelected)
                 }
                 .buttonStyle(.plain)
                 .disabled(viewModel.isRunning || isLocked)
-                .scaleEffect(isSelected ? 1.0 : 0.98)
-                .animation(.spring(response: 0.25, dampingFraction: 0.8), value: isSelected)
+                .scaleEffect(viewModel.reducedMotion ? 1.0 : (isSelected ? 1.0 : 0.98))
+                .animation(viewModel.reducedMotion ? nil : .spring(response: 0.25, dampingFraction: 0.8), value: isSelected)
             }
         }
         .padding(3)
@@ -1189,8 +1221,12 @@ extension ContentView {
                 let isSelected = viewModel.proxyScope == scope
                 
                 Button {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    if viewModel.reducedMotion {
                         viewModel.setProxyScope(scope)
+                    } else {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                            viewModel.setProxyScope(scope)
+                        }
                     }
                 } label: {
                     Text(scope.title)
@@ -1207,12 +1243,12 @@ extension ContentView {
                                 }
                             }
                         )
-                        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSelected)
+                        .animation(viewModel.reducedMotion ? nil : .spring(response: 0.3, dampingFraction: 0.7), value: isSelected)
                 }
                 .buttonStyle(.plain)
                 .disabled(viewModel.isRunning)
-                .scaleEffect(isSelected ? 1.0 : 0.98)
-                .animation(.spring(response: 0.25, dampingFraction: 0.8), value: isSelected)
+                .scaleEffect(viewModel.reducedMotion ? 1.0 : (isSelected ? 1.0 : 0.98))
+                .animation(viewModel.reducedMotion ? nil : .spring(response: 0.25, dampingFraction: 0.8), value: isSelected)
             }
         }
         .padding(3)
@@ -1323,6 +1359,7 @@ struct MainActionButton: View {
     let pulse: Bool
     let actionTint: Color
     let isDisabled: Bool
+    let reducedMotion: Bool
     let action: () -> Void
     
     @State private var isHovering = false
@@ -1330,8 +1367,12 @@ struct MainActionButton: View {
     
     var body: some View {
         Button(action: {
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+            if reducedMotion {
                 action()
+            } else {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                    action()
+                }
             }
         }) {
             ZStack {
@@ -1344,23 +1385,25 @@ struct MainActionButton: View {
                         )
                     )
                 
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(
-                        RadialGradient(
-                            colors: [Color.white.opacity(isHovering ? 0.3 : 0), Color.clear],
-                            center: .topLeading,
-                            startRadius: 0,
-                            endRadius: 150
+                if !reducedMotion {
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .fill(
+                            RadialGradient(
+                                colors: [Color.white.opacity(isHovering ? 0.3 : 0), Color.clear],
+                                center: .topLeading,
+                                startRadius: 0,
+                                endRadius: 150
+                            )
                         )
-                    )
+                }
                 
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(Color.white.opacity(isHovering ? 0.5 : 0.2), lineWidth: 1)
+                    .stroke(Color.white.opacity(reducedMotion ? 0.2 : (isHovering ? 0.5 : 0.2)), lineWidth: 1)
                 
                 VStack(spacing: 4) {
                     Text(isRunning ? "Stop Session" : "Start Session")
                         .font(.system(size: 20, weight: .bold, design: .rounded))
-                        .contentTransition(.numericText())
+                        .contentTransition(reducedMotion ? .identity : .numericText())
 
                     Text(isRunning ? "Terminate proxy" : "Launch Roblox")
                         .font(.system(size: 12, weight: .medium, design: .rounded))
@@ -1370,20 +1413,22 @@ struct MainActionButton: View {
             }
             .frame(maxWidth: .infinity)
             .frame(height: 72)
-            .shadow(color: actionTint.opacity(pulse ? 0.5 : 0.25), radius: isHovering ? 24 : pulse ? 20 : 12, y: isHovering ? 6 : 4)
+            .shadow(color: actionTint.opacity(reducedMotion ? 0.25 : (pulse ? 0.5 : 0.25)), radius: reducedMotion ? 12 : (isHovering ? 24 : pulse ? 20 : 12), y: 4)
         }
         .buttonStyle(.plain)
         .disabled(isDisabled)
-        .scaleEffect(isPressed ? 0.97 : isHovering ? 1.01 : 1.0)
-        .animation(.spring(response: 0.25, dampingFraction: 0.7), value: isHovering)
-        .animation(.spring(response: 0.2, dampingFraction: 0.6), value: isPressed)
+        .scaleEffect(reducedMotion ? 1.0 : (isPressed ? 0.97 : isHovering ? 1.01 : 1.0))
+        .animation(reducedMotion ? nil : .spring(response: 0.25, dampingFraction: 0.7), value: isHovering)
+        .animation(reducedMotion ? nil : .spring(response: 0.2, dampingFraction: 0.6), value: isPressed)
         .onHover { hovering in
-            isHovering = hovering
+            if !reducedMotion {
+                isHovering = hovering
+            }
         }
         .simultaneousGesture(
             DragGesture(minimumDistance: 0)
-                .onChanged { _ in isPressed = true }
-                .onEnded { _ in isPressed = false }
+                .onChanged { _ in if !reducedMotion { isPressed = true } }
+                .onEnded { _ in if !reducedMotion { isPressed = false } }
         )
         .opacity(isDisabled ? 0.5 : 1.0)
     }
