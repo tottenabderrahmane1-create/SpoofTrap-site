@@ -3,12 +3,9 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var viewModel = BypassViewModel()
-    @State private var pulse = false
     @State private var introVisible = false
     @State private var splashVisible = true
-    @State private var splashRingExpanded = false
-    @State private var splashSweep = false
-    @State private var splashGlow = false
+    @State private var splashProgress: CGFloat = 0
     @State private var showingAdvanced = false
     @State private var showingFastFlags = false
     @State private var showingStats = false
@@ -23,13 +20,11 @@ struct ContentView: View {
                 rightColumn
             }
             .padding(20)
-            .scaleEffect(introVisible ? 1 : 0.975)
             .opacity(introVisible ? 1 : 0)
-            .blur(radius: splashVisible ? 12 : 0)
 
             if splashVisible {
                 splashOverlay
-                    .transition(.opacity.combined(with: .scale(scale: 1.03)))
+                    .transition(.opacity)
             }
         }
         .background(
@@ -38,21 +33,12 @@ struct ContentView: View {
             }
         )
         .onAppear {
-            withAnimation(.easeInOut(duration: 1.9).repeatForever(autoreverses: true)) {
-                pulse = true
-            }
-            withAnimation(.easeInOut(duration: 2.4).repeatForever(autoreverses: false)) {
-                splashSweep = true
-            }
-            withAnimation(.easeInOut(duration: 1.6).repeatForever(autoreverses: true)) {
-                splashGlow = true
-            }
-            withAnimation(.spring(response: 1.3, dampingFraction: 0.78).delay(0.12)) {
-                splashRingExpanded = true
+            withAnimation(.easeInOut(duration: 1.8)) {
+                splashProgress = 1
             }
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.2) {
-                withAnimation(.spring(response: 0.95, dampingFraction: 0.86)) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                withAnimation(.easeOut(duration: 0.3)) {
                     splashVisible = false
                     introVisible = true
                 }
@@ -811,10 +797,8 @@ struct ContentView: View {
 
                 MainActionButton(
                     isRunning: viewModel.isRunning,
-                    pulse: pulse,
                     actionTint: actionTint,
                     isDisabled: (!viewModel.binaryAvailable || !viewModel.robloxInstalled) && !viewModel.isRunning,
-                    reducedMotion: viewModel.reducedMotion,
                     action: viewModel.toggleBypass
                 )
 
@@ -900,109 +884,30 @@ struct ContentView: View {
     // MARK: - Splash
 
     private var splashOverlay: some View {
-        GeometryReader { geo in
-            ZStack {
-                LinearGradient(
-                    colors: [
-                        Color(red: 0.02, green: 0.05, blue: 0.10),
-                        Color(red: 0.05, green: 0.09, blue: 0.16)
-                    ],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+        ZStack {
+            Color(red: 0.04, green: 0.07, blue: 0.14)
                 .ignoresSafeArea()
-                
-                Circle()
-                    .fill(Color(red: 0.2, green: 0.5, blue: 0.9).opacity(splashGlow ? 0.15 : 0.08))
-                    .frame(width: 600, height: 600)
-                    .blur(radius: 100)
-                    .offset(x: -geo.size.width * 0.25, y: geo.size.height * 0.2)
 
-                Circle()
-                    .fill(Color(red: 0.4, green: 0.85, blue: 1.0).opacity(splashGlow ? 0.25 : 0.12))
-                    .frame(width: 500, height: 500)
-                    .blur(radius: 80)
-                    .offset(x: geo.size.width * 0.15, y: -geo.size.height * 0.1)
+            VStack(spacing: 24) {
+                logoTile(size: 80)
+                    .shadow(color: Color(red: 0.45, green: 0.86, blue: 1.0).opacity(0.4), radius: 20)
 
-                VStack(spacing: 28) {
-                    ZStack {
-                        Circle()
-                            .stroke(
-                                LinearGradient(
-                                    colors: [Color.white.opacity(0.12), Color.white.opacity(0.04)],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                ),
-                                lineWidth: 1
-                            )
-                            .frame(width: splashRingExpanded ? 200 : 100, height: splashRingExpanded ? 200 : 100)
-                            .scaleEffect(splashGlow ? 1.02 : 1.0)
+                Text("SpoofTrap")
+                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
 
-                        Circle()
-                            .trim(from: 0.1, to: 0.85)
-                            .stroke(
-                                AngularGradient(
-                                    colors: [
-                                        Color.white.opacity(0.05),
-                                        Color(red: 0.45, green: 0.88, blue: 1.0),
-                                        Color(red: 0.8, green: 0.45, blue: 0.9),
-                                        Color(red: 0.9, green: 0.35, blue: 0.5),
-                                        Color.white.opacity(0.05)
-                                    ],
-                                    center: .center
-                                ),
-                                style: StrokeStyle(lineWidth: 5, lineCap: .round)
-                            )
-                            .frame(width: splashRingExpanded ? 160 : 70, height: splashRingExpanded ? 160 : 70)
-                            .rotationEffect(.degrees(splashSweep ? 360 : 0))
-                            .blur(radius: 0.5)
+                Text("Loading...")
+                    .font(.system(size: 13, weight: .medium, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.5))
 
-                        logoTile(size: 72)
-                            .scaleEffect(splashGlow ? 1.03 : 1.0)
-                            .shadow(color: Color(red: 0.45, green: 0.86, blue: 1.0).opacity(splashGlow ? 0.6 : 0.25), radius: splashGlow ? 25 : 18)
-                    }
-
-                    VStack(spacing: 10) {
-                        Text("SpoofTrap")
-                            .font(.system(size: 36, weight: .bold, design: .rounded))
-                            .foregroundStyle(
-                                LinearGradient(
-                                    colors: [.white, .white.opacity(0.85)],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
-                            .shadow(color: .black.opacity(0.3), radius: 8, y: 4)
-
-                        Text("Initializing")
-                            .font(.system(size: 14, weight: .medium, design: .rounded))
-                            .foregroundStyle(.white.opacity(0.55))
-                            .tracking(1.5)
-                            .textCase(.uppercase)
-                    }
-
-                    HStack(spacing: 6) {
+                Capsule()
+                    .fill(Color.white.opacity(0.15))
+                    .frame(width: 120, height: 4)
+                    .overlay(alignment: .leading) {
                         Capsule()
-                            .fill(Color.white.opacity(0.12))
-                            .frame(width: 35, height: 4)
-                        Capsule()
-                            .fill(
-                                LinearGradient(
-                                    colors: [
-                                        Color(red: 0.45, green: 0.88, blue: 1.0).opacity(0.9),
-                                        Color(red: 0.6, green: 0.7, blue: 1.0).opacity(0.8)
-                                    ],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
-                            .frame(width: splashGlow ? 90 : 55, height: 4)
-                            .shadow(color: Color(red: 0.45, green: 0.88, blue: 1.0).opacity(0.5), radius: 6)
-                        Capsule()
-                            .fill(Color.white.opacity(0.12))
-                            .frame(width: 35, height: 4)
+                            .fill(Color(red: 0.45, green: 0.88, blue: 1.0))
+                            .frame(width: 120 * splashProgress, height: 4)
                     }
-                }
             }
         }
         .allowsHitTesting(false)
@@ -1023,59 +928,42 @@ struct GlassCardView<Content: View>: View {
     @ViewBuilder let content: () -> Content
     @State private var isHovering = false
     
+    private var fillOpacity1: Double {
+        accent ? 0.10 : 0.08
+    }
+    
+    private var fillOpacity2: Double {
+        accent ? 0.06 : 0.05
+    }
+    
+    private var strokeOpacity1: Double {
+        accent ? 0.12 : 0.08
+    }
+    
+    private var strokeOpacity2: Double {
+        accent ? 0.06 : 0.04
+    }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             content()
         }
         .padding(18)
         .background(
-            ZStack {
-                RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .fill(
-                        LinearGradient(
-                            colors: accent
-                                ? [Color.white.opacity(reducedMotion ? 0.10 : (isHovering ? 0.12 : 0.10)), Color.white.opacity(reducedMotion ? 0.06 : (isHovering ? 0.08 : 0.06))]
-                                : [Color.white.opacity(reducedMotion ? 0.08 : (isHovering ? 0.10 : 0.08)), Color.white.opacity(reducedMotion ? 0.05 : (isHovering ? 0.07 : 0.05))],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [Color.white.opacity(fillOpacity1), Color.white.opacity(fillOpacity2)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
                     )
-                
-                if !reducedMotion {
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
-                        .fill(
-                            RadialGradient(
-                                colors: [Color.white.opacity(isHovering ? 0.05 : 0), Color.clear],
-                                center: .topLeading,
-                                startRadius: 0,
-                                endRadius: 200
-                            )
-                        )
-                }
-            }
+                )
         )
         .overlay(
             RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .stroke(
-                    LinearGradient(
-                        colors: [
-                            Color.white.opacity(reducedMotion ? (accent ? 0.12 : 0.08) : (isHovering ? 0.18 : accent ? 0.12 : 0.08)),
-                            Color.white.opacity(reducedMotion ? (accent ? 0.06 : 0.04) : (isHovering ? 0.10 : accent ? 0.06 : 0.04))
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    ),
-                    lineWidth: 1
-                )
+                .stroke(Color.white.opacity(strokeOpacity1), lineWidth: 1)
         )
         .shadow(color: Color.black.opacity(0.2), radius: 20, y: 10)
-        .scaleEffect(reducedMotion ? 1.0 : (isHovering ? 1.005 : 1.0))
-        .animation(reducedMotion ? nil : .easeOut(duration: 0.2), value: isHovering)
-        .onHover { hovering in
-            if !reducedMotion {
-                isHovering = hovering
-            }
-        }
     }
 }
 
@@ -1098,26 +986,10 @@ extension ContentView {
     }
 
     private func statusDot(active: Bool) -> some View {
-        ZStack {
-            Circle()
-                .fill(active ? Color.green : Color.red.opacity(0.8))
-                .frame(width: 8, height: 8)
-            
-            if !viewModel.reducedMotion {
-                Circle()
-                    .fill(
-                        RadialGradient(
-                            colors: [Color.white.opacity(0.6), Color.clear],
-                            center: .topLeading,
-                            startRadius: 0,
-                            endRadius: 4
-                        )
-                    )
-                    .frame(width: 8, height: 8)
-            }
-        }
-        .shadow(color: (active ? Color.green : Color.red).opacity(viewModel.reducedMotion ? 0.5 : (pulse ? 0.7 : 0.4)), radius: viewModel.reducedMotion ? 4 : (pulse ? 6 : 4))
-        .animation(viewModel.reducedMotion ? nil : .easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: pulse)
+        Circle()
+            .fill(active ? Color.green : Color.red.opacity(0.8))
+            .frame(width: 8, height: 8)
+            .shadow(color: (active ? Color.green : Color.red).opacity(0.5), radius: 4)
     }
 
     private func quickStat(label: String, value: String) -> some View {
@@ -1142,7 +1014,7 @@ extension ContentView {
             Circle()
                 .fill(statusColor)
                 .frame(width: 8, height: 8)
-                .shadow(color: statusColor.opacity(pulse ? 0.6 : 0.3), radius: pulse ? 8 : 4)
+                .shadow(color: statusColor.opacity(0.4), radius: 5)
 
             Text(viewModel.state.title)
                 .font(.system(size: 13, weight: .bold, design: .rounded))
@@ -1166,13 +1038,7 @@ extension ContentView {
                 
                 Button {
                     if !isLocked {
-                        if viewModel.reducedMotion {
-                            viewModel.applyPreset(preset)
-                        } else {
-                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                                viewModel.applyPreset(preset)
-                            }
-                        }
+                        viewModel.applyPreset(preset)
                     }
                 } label: {
                     HStack(spacing: 3) {
@@ -1192,20 +1058,13 @@ extension ContentView {
                     .padding(.horizontal, 10)
                     .padding(.vertical, 7)
                     .background(
-                        ZStack {
-                            if isSelected && !isLocked {
-                                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                    .fill(Color.white)
-                                    .shadow(color: .black.opacity(0.15), radius: 4, y: 2)
-                            }
-                        }
+                        isSelected && !isLocked ?
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .fill(Color.white) : nil
                     )
-                    .animation(viewModel.reducedMotion ? nil : .spring(response: 0.3, dampingFraction: 0.7), value: isSelected)
                 }
                 .buttonStyle(.plain)
                 .disabled(viewModel.isRunning || isLocked)
-                .scaleEffect(viewModel.reducedMotion ? 1.0 : (isSelected ? 1.0 : 0.98))
-                .animation(viewModel.reducedMotion ? nil : .spring(response: 0.25, dampingFraction: 0.8), value: isSelected)
             }
         }
         .padding(3)
@@ -1221,13 +1080,7 @@ extension ContentView {
                 let isSelected = viewModel.proxyScope == scope
                 
                 Button {
-                    if viewModel.reducedMotion {
-                        viewModel.setProxyScope(scope)
-                    } else {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                            viewModel.setProxyScope(scope)
-                        }
-                    }
+                    viewModel.setProxyScope(scope)
                 } label: {
                     Text(scope.title)
                         .font(.system(size: 11, weight: .semibold, design: .rounded))
@@ -1235,20 +1088,13 @@ extension ContentView {
                         .padding(.horizontal, 14)
                         .padding(.vertical, 7)
                         .background(
-                            ZStack {
-                                if isSelected {
-                                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                        .fill(Color.white)
-                                        .shadow(color: .black.opacity(0.15), radius: 4, y: 2)
-                                }
-                            }
+                            isSelected ?
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(Color.white) : nil
                         )
-                        .animation(viewModel.reducedMotion ? nil : .spring(response: 0.3, dampingFraction: 0.7), value: isSelected)
                 }
                 .buttonStyle(.plain)
                 .disabled(viewModel.isRunning)
-                .scaleEffect(viewModel.reducedMotion ? 1.0 : (isSelected ? 1.0 : 0.98))
-                .animation(viewModel.reducedMotion ? nil : .spring(response: 0.25, dampingFraction: 0.8), value: isSelected)
             }
         }
         .padding(3)
@@ -1356,25 +1202,12 @@ extension ContentView {
 
 struct MainActionButton: View {
     let isRunning: Bool
-    let pulse: Bool
     let actionTint: Color
     let isDisabled: Bool
-    let reducedMotion: Bool
     let action: () -> Void
     
-    @State private var isHovering = false
-    @State private var isPressed = false
-    
     var body: some View {
-        Button(action: {
-            if reducedMotion {
-                action()
-            } else {
-                withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                    action()
-                }
-            }
-        }) {
+        Button(action: action) {
             ZStack {
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
                     .fill(
@@ -1385,25 +1218,12 @@ struct MainActionButton: View {
                         )
                     )
                 
-                if !reducedMotion {
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(
-                            RadialGradient(
-                                colors: [Color.white.opacity(isHovering ? 0.3 : 0), Color.clear],
-                                center: .topLeading,
-                                startRadius: 0,
-                                endRadius: 150
-                            )
-                        )
-                }
-                
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(Color.white.opacity(reducedMotion ? 0.2 : (isHovering ? 0.5 : 0.2)), lineWidth: 1)
+                    .stroke(Color.white.opacity(0.3), lineWidth: 1)
                 
                 VStack(spacing: 4) {
                     Text(isRunning ? "Stop Session" : "Start Session")
                         .font(.system(size: 20, weight: .bold, design: .rounded))
-                        .contentTransition(reducedMotion ? .identity : .numericText())
 
                     Text(isRunning ? "Terminate proxy" : "Launch Roblox")
                         .font(.system(size: 12, weight: .medium, design: .rounded))
@@ -1413,53 +1233,37 @@ struct MainActionButton: View {
             }
             .frame(maxWidth: .infinity)
             .frame(height: 72)
-            .shadow(color: actionTint.opacity(reducedMotion ? 0.25 : (pulse ? 0.5 : 0.25)), radius: reducedMotion ? 12 : (isHovering ? 24 : pulse ? 20 : 12), y: 4)
+            .shadow(color: actionTint.opacity(0.3), radius: 12, y: 4)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(MainButtonStyle())
         .disabled(isDisabled)
-        .scaleEffect(reducedMotion ? 1.0 : (isPressed ? 0.97 : isHovering ? 1.01 : 1.0))
-        .animation(reducedMotion ? nil : .spring(response: 0.25, dampingFraction: 0.7), value: isHovering)
-        .animation(reducedMotion ? nil : .spring(response: 0.2, dampingFraction: 0.6), value: isPressed)
-        .onHover { hovering in
-            if !reducedMotion {
-                isHovering = hovering
-            }
-        }
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { _ in if !reducedMotion { isPressed = true } }
-                .onEnded { _ in if !reducedMotion { isPressed = false } }
-        )
         .opacity(isDisabled ? 0.5 : 1.0)
+    }
+}
+
+struct MainButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
+            .animation(.easeOut(duration: 0.1), value: configuration.isPressed)
     }
 }
 
 // MARK: - Small Button Style
 
 struct SmallButtonStyle: ButtonStyle {
-    @State private var isHovering = false
-    
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.system(size: 11, weight: .semibold, design: .rounded))
-            .foregroundStyle(.white.opacity(configuration.isPressed ? 1.0 : isHovering ? 0.95 : 0.8))
+            .foregroundStyle(.white.opacity(configuration.isPressed ? 1.0 : 0.8))
             .padding(.horizontal, 10)
             .padding(.vertical, 6)
             .background(
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .fill(Color.white.opacity(configuration.isPressed ? 0.15 : isHovering ? 0.12 : 0.08))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .stroke(Color.white.opacity(isHovering ? 0.15 : 0), lineWidth: 1)
+                    .fill(Color.white.opacity(configuration.isPressed ? 0.15 : 0.08))
             )
             .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
-            .animation(.spring(response: 0.2, dampingFraction: 0.7), value: configuration.isPressed)
-            .onHover { hovering in
-                withAnimation(.easeInOut(duration: 0.15)) {
-                    isHovering = hovering
-                }
-            }
+            .animation(.easeOut(duration: 0.1), value: configuration.isPressed)
     }
 }
 
