@@ -260,7 +260,8 @@ class LicenseManager: ObservableObject {
             
             if license.deviceId == deviceId && !license.isExpired {
                 currentLicense = license
-                // Don't set isValidated = true yet, wait for server validation
+                // Don't set isValidated = true - must validate with server first
+                isValidated = false
                 
                 Task {
                     await validateOnLaunch(license: license)
@@ -276,20 +277,14 @@ class LicenseManager: ObservableObject {
     private func validateOnLaunch(license: LicenseInfo) async {
         isValidating = true
         
-        // Try to validate with server
+        // Must validate with server - no grace period
         let success = await activate(licenseKey: license.licenseKey)
         
         if !success {
-            // If network fails, allow offline grace period (7 days since last activation)
-            let gracePeriod: TimeInterval = 7 * 24 * 60 * 60
-            if Date().timeIntervalSince(license.activatedAt) < gracePeriod {
-                currentLicense = license
-                isValidated = true
-                validationError = nil
-                startHeartbeat()
-            } else {
-                clearLicense()
-                validationError = "License validation required. Please connect to the internet."
+            // Validation failed - clear license immediately
+            clearLicense()
+            if validationError == nil {
+                validationError = "License validation failed. Please check your connection."
             }
         }
         
