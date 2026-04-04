@@ -26,7 +26,8 @@ final class ProManager: ObservableObject {
         }
     }
     
-    var canEditFastFlags: Bool { isPro }
+    var canEditFastFlags: Bool { true }
+    var canAddCustomFastFlags: Bool { isPro }
     var canUseAdvancedSettings: Bool { isPro }
     var canViewDetailedStats: Bool { isPro }
     var canImportCustomMods: Bool { isPro }

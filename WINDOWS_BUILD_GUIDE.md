@@ -212,7 +212,7 @@ Store in `%APPDATA%\SpoofTrap\license.json`:
 
 **Pro Only:**
 - Fast & Custom presets
-- Full FastFlags editor (add/edit/remove flags)
+- Add custom FastFlags (type any FFlag name + value)
 - Advanced settings (Chunk Size, Disorder toggle)
 - Detailed session stats
 - Custom mod file imports (App Icon, Fonts, Avatar BG categories)
@@ -227,8 +227,8 @@ Store in `%APPDATA%\SpoofTrap\license.json`:
 
 **Free Users Get:**
 - Stable & Balanced presets
-- Basic FastFlags ON/OFF toggle
-- FastFlags presets (Performance, Graphics, etc.) - read-only apply
+- FastFlags editor (toggle/edit all curated flags)
+- FastFlags presets (Performance, Graphics, etc.)
 - Core bypass functionality
 - Choose spoofdpi binary location
 - Death Sound and Custom Cursor mod categories

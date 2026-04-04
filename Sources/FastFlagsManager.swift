@@ -102,6 +102,26 @@ final class FastFlagsManager: ObservableObject {
         saveSettings()
     }
     
+    func addCustomFlag(id: String, name: String, valueType: FastFlag.ValueType, value: String) {
+        guard !flags.contains(where: { $0.id == id }) else { return }
+        let flag = FastFlag(
+            id: id, name: name, description: "Custom flag",
+            category: .debug, valueType: valueType,
+            isEnabled: true, value: value, defaultValue: value
+        )
+        flags.append(flag)
+        saveSettings()
+    }
+
+    func removeFlag(_ flag: FastFlag) {
+        flags.removeAll { $0.id == flag.id }
+        saveSettings()
+    }
+
+    var isCustomFlag: (FastFlag) -> Bool {
+        { flag in !Self.allowedFlags.contains(where: { $0.id == flag.id }) }
+    }
+
     func applyPreset(_ preset: FastFlagPreset) {
         selectedPreset = preset
         

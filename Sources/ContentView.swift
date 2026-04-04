@@ -592,6 +592,9 @@ struct ContentView: View {
         }
     }
 
+    @State private var customFlagId = ""
+    @State private var customFlagValue = ""
+
     private var fastFlagsDetailCard: some View {
         glassCard {
             VStack(alignment: .leading, spacing: 14) {
@@ -628,6 +631,60 @@ struct ContentView: View {
                         }
                         .padding(.top, 4)
                     }
+                }
+
+                Divider().background(Color.white.opacity(0.1))
+
+                if viewModel.proManager.canAddCustomFastFlags {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("ADD CUSTOM FLAG")
+                            .font(.system(size: 11, weight: .bold, design: .rounded))
+                            .foregroundStyle(.white.opacity(0.5))
+
+                        HStack(spacing: 8) {
+                            TextField("FFlag name (e.g. FFlagMyFlag)", text: $customFlagId)
+                                .textFieldStyle(.plain)
+                                .font(.system(size: 11, weight: .medium, design: .monospaced))
+                                .foregroundStyle(.white)
+                                .padding(8)
+                                .background(.white.opacity(0.08))
+                                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+
+                            TextField("Value", text: $customFlagValue)
+                                .textFieldStyle(.plain)
+                                .font(.system(size: 11, weight: .medium, design: .monospaced))
+                                .foregroundStyle(.white)
+                                .padding(8)
+                                .frame(width: 60)
+                                .background(.white.opacity(0.08))
+                                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+
+                            Button {
+                                guard !customFlagId.isEmpty else { return }
+                                let valType: FastFlag.ValueType = customFlagValue == "true" || customFlagValue == "false" ? .bool : .int
+                                viewModel.fastFlagsManager.addCustomFlag(
+                                    id: customFlagId, name: customFlagId,
+                                    valueType: valType, value: customFlagValue.isEmpty ? "true" : customFlagValue
+                                )
+                                customFlagId = ""
+                                customFlagValue = ""
+                            } label: {
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.system(size: 16))
+                                    .foregroundStyle(.cyan)
+                            }
+                            .buttonStyle(.plain)
+                            .disabled(customFlagId.isEmpty || viewModel.isRunning)
+                        }
+                    }
+                } else {
+                    HStack(spacing: 6) {
+                        Image(systemName: "lock.fill")
+                            .font(.system(size: 10))
+                        Text("Upgrade to Pro to add custom flags")
+                            .font(.system(size: 11, weight: .medium, design: .rounded))
+                    }
+                    .foregroundStyle(.yellow.opacity(0.6))
                 }
             }
         }
@@ -674,6 +731,17 @@ struct ContentView: View {
                         .fill(Color.white.opacity(0.08))
                 )
                 .disabled(viewModel.isRunning)
+            }
+
+            if viewModel.fastFlagsManager.isCustomFlag(flag) {
+                Button {
+                    viewModel.fastFlagsManager.removeFlag(flag)
+                } label: {
+                    Image(systemName: "trash")
+                        .font(.system(size: 10))
+                        .foregroundStyle(.red.opacity(0.6))
+                }
+                .buttonStyle(.plain)
             }
         }
         .padding(.vertical, 6)

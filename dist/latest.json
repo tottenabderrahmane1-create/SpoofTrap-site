@@ -1,31 +1,25 @@
 {
-  "version": "1.4.0",
+  "version": "1.4.1",
   "releaseDate": "2026-04-04",
   "downloads": {
     "zip": {
       "url": "https://raw.githubusercontent.com/spooftrap-app/SpoofTrap-site/main/docs/dist/SpoofTrap.zip",
-      "sha256": "eb503e80bb1895707d4a1c9535bba7005543f6640225aeaf2b653a313745c5b6"
+      "sha256": "9ee64cd6798078e087bbf0d101b82b1ac659de3bfc98f369461927bcce75e3f4"
     },
     "pkg": {
       "url": "https://raw.githubusercontent.com/spooftrap-app/SpoofTrap-site/main/docs/dist/SpoofTrap.pkg",
-      "sha256": "5f9799f64abfba52c207bee65d55b431395d6c0f8bc6f2a40c1b504bb0e984b7"
+      "sha256": "adabdffcecbcdf4edf694cb9e15219ae9ad4c5940c8377e2d61a1466d9078221"
     },
     "dmg": {
       "url": "https://raw.githubusercontent.com/spooftrap-app/SpoofTrap-site/main/docs/dist/SpoofTrap.dmg",
-      "sha256": "8198343c539da4d2dc3b27d4f2d77fe813a2aa0d2338813b80ab1d133b77485a"
+      "sha256": "ffe5158a0d67622cc81776ff9b6087cda0f0ce32b65a57846e493cf1df2c1bda"
     }
   },
   "changelog": [
-    "New: FPS Unlocker toggle in Settings (60/120 free, 144/240/Max Pro)",
-    "New: Discord Rich Presence — show game activity on your profile",
-    "New: Live server region display with GeoIP lookup",
-    "New: Quick Launch favorites with one-click deep links",
-    "New: Auto-rejoin on disconnect (Pro)",
-    "New: Game history tracking",
-    "New: Multi-instance Roblox launching (Pro)",
-    "New: Custom accent color themes (Pro)",
-    "New: Roblox update channel switching (Pro)",
-    "New: Live Info card with game name, server, and Discord status"
+    "Change: FastFlags editor now free for all users (edit existing flags)",
+    "New: Add Custom Flags (Pro) — type any FFlag name + value",
+    "New: Delete button for custom flags",
+    "Fix: FastFlags Edit button no longer locked for free users"
   ],
   "minimumOS": "12.0"
 }
