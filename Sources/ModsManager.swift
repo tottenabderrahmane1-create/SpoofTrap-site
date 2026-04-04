@@ -55,34 +55,26 @@ final class ModsManager: ObservableObject {
         ModCategory(
             id: "app_icon",
             name: "App Icon",
-            description: "Swap the Roblox application icon",
+            description: "Swap the Roblox in-game icon",
             icon: "app.badge.fill",
-            relativePaths: ["content/textures/ui/icon_app-512.png"],
-            allowedExtensions: ["png", "icns"],
+            relativePaths: [
+                "content/textures/ui/icon_app-512.png"
+            ],
+            allowedExtensions: ["png"],
             requiresPro: true
         ),
         ModCategory(
             id: "fonts",
             name: "Custom Fonts",
-            description: "Replace default Roblox fonts",
+            description: "Replace default Roblox UI fonts",
             icon: "textformat",
             relativePaths: [
-                "content/fonts/GothamSSm-Medium.otf",
-                "content/fonts/GothamSSm-Bold.otf",
-                "content/fonts/GothamSSm-Book.otf"
+                "content/fonts/BuilderSans-Regular.otf",
+                "content/fonts/BuilderSans-Medium.otf",
+                "content/fonts/BuilderSans-Bold.otf",
+                "content/fonts/BuilderSans-ExtraBold.otf"
             ],
             allowedExtensions: ["otf", "ttf"],
-            requiresPro: true
-        ),
-        ModCategory(
-            id: "sky",
-            name: "Skybox",
-            description: "Replace the default skybox textures",
-            icon: "cloud.fill",
-            relativePaths: [
-                "content/sky/null.png"
-            ],
-            allowedExtensions: ["png"],
             requiresPro: true
         ),
         ModCategory(
@@ -189,7 +181,8 @@ final class ModsManager: ObservableObject {
     func applyMods(robloxAppPath: String) -> (applied: Int, failed: Int) {
         guard isEnabled else { return (0, 0) }
 
-        let contentBase = (robloxAppPath as NSString).appendingPathComponent("Contents/MacOS")
+        let resourcesBase = (robloxAppPath as NSString).appendingPathComponent("Contents/Resources")
+        let macosBase = (robloxAppPath as NSString).appendingPathComponent("Contents/MacOS")
         var applied = 0
         var failed = 0
 
@@ -215,7 +208,9 @@ final class ModsManager: ObservableObject {
             }
 
             for relPath in cat.relativePaths {
-                let targetPath = (contentBase as NSString).appendingPathComponent(relPath)
+                // app_icon textures live in Contents/MacOS, everything else in Contents/Resources
+                let base = cat.id == "app_icon" ? macosBase : resourcesBase
+                let targetPath = (base as NSString).appendingPathComponent(relPath)
                 let backupPath = backupPathFor(target: targetPath)
 
                 if !fileManager.fileExists(atPath: backupPath) && fileManager.fileExists(atPath: targetPath) {
@@ -248,11 +243,13 @@ final class ModsManager: ObservableObject {
     }
 
     func restoreOriginals(robloxAppPath: String) {
-        let contentBase = (robloxAppPath as NSString).appendingPathComponent("Contents/MacOS")
+        let resourcesBase = (robloxAppPath as NSString).appendingPathComponent("Contents/Resources")
+        let macosBase = (robloxAppPath as NSString).appendingPathComponent("Contents/MacOS")
 
         for cat in Self.categories {
             for relPath in cat.relativePaths {
-                let targetPath = (contentBase as NSString).appendingPathComponent(relPath)
+                let base = cat.id == "app_icon" ? macosBase : resourcesBase
+                let targetPath = (base as NSString).appendingPathComponent(relPath)
                 let backupPath = backupPathFor(target: targetPath)
 
                 if fileManager.fileExists(atPath: backupPath) {

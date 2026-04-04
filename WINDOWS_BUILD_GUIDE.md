@@ -314,10 +314,11 @@ Cosmetic asset swaps applied to the Roblox install directory before each launch.
 |----------|---------------------------------------|------------|------|
 | Death Sound | `content\sounds\ouch.ogg` | .ogg | Yes |
 | Custom Cursor | `content\textures\Cursors\KeyboardMouse\ArrowCursor.png`, `ArrowFarCursor.png` | .png | Yes |
-| App Icon | `content\textures\ui\icon_app-512.png` | .png, .ico | PRO |
-| Custom Fonts | `content\fonts\GothamSSm-Medium.otf`, `-Bold.otf`, `-Book.otf` | .otf, .ttf | PRO |
-| Skybox | `content\sky\null.png` | .png | PRO |
+| App Icon | `content\textures\ui\icon_app-512.png` | .png | PRO |
+| Custom Fonts | `content\fonts\BuilderSans-Regular.otf`, `-Medium.otf`, `-Bold.otf`, `-ExtraBold.otf` | .otf, .ttf | PRO |
 | Avatar Background | `ExtraContent\places\Mobile.rbxl` | .rbxl | PRO |
+
+**Note:** Roblox replaced Gotham fonts with Builder fonts. Skybox textures use binary `.tex` format and can't be swapped with PNGs — omitted for now.
 
 **Pro Gating:**
 - Free users: Can enable/disable mods, use Death Sound and Custom Cursor categories

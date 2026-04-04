@@ -1,27 +1,28 @@
 {
-  "version": "1.3.0",
+  "version": "1.3.1",
   "releaseDate": "2026-04-04",
   "downloads": {
     "zip": {
       "url": "https://raw.githubusercontent.com/spooftrap-app/SpoofTrap-site/main/docs/dist/SpoofTrap.zip",
-      "sha256": "3b18360b9986b0157aa1bb59051b05bea985c19351fad92549862908e04b74c2"
+      "sha256": "4665dd28a4616f28274e3c3124040c26c1d84b2a7277f4c7f2e090bd61e6f648"
     },
     "pkg": {
       "url": "https://raw.githubusercontent.com/spooftrap-app/SpoofTrap-site/main/docs/dist/SpoofTrap.pkg",
-      "sha256": "563d845be6e6df1c10dad17df6fd3d0ef58b5d7d2f19b99807ea7948eb45ece1"
+      "sha256": "17efd7b005b30fc5ab69f6326952de1dcbc081fbdc117a5f9c8e01f8ccd44da5"
     },
     "dmg": {
       "url": "https://raw.githubusercontent.com/spooftrap-app/SpoofTrap-site/main/docs/dist/SpoofTrap.dmg",
-      "sha256": "c9588e176067d171d1a8c00c73ad656f78ed0bbb7761f1d74b7e728ccf5ab696"
+      "sha256": "dbccfc54efa1d171d860f7180724632b47f038eb8e4e94ae4a047314179ed905"
     }
   },
   "changelog": [
+    "Fix: Mod file paths corrected to match actual Roblox macOS structure",
+    "Fix: Death sound, cursors, fonts now target Contents/Resources",
+    "Fix: Fonts updated from Gotham to BuilderSans (current Roblox fonts)",
+    "Removed: Skybox category (uses binary .tex format, not swappable)",
     "New: File replacement mods (Bloxstrap-style)",
-    "New: Death Sound, Custom Cursor, App Icon, Fonts, Skybox, Avatar BG mod categories",
-    "Pro: Custom mod file imports for premium categories",
-    "Fix: FastFlags editor now properly locked for free users",
-    "Fix: Settings gear and stats icons visible but locked for free users",
-    "Updated Windows build guide with verified specs"
+    "Pro: Custom mod imports for premium categories",
+    "Fix: FastFlags editor and advanced settings properly locked for free users"
   ],
   "minimumOS": "12.0"
 }
