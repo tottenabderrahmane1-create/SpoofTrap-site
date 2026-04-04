@@ -30,6 +30,17 @@ final class ProManager: ObservableObject {
     var canUseAdvancedSettings: Bool { isPro }
     var canViewDetailedStats: Bool { isPro }
     var canImportCustomMods: Bool { isPro }
+    var canUseMultiInstance: Bool { isPro }
+    var canUseAutoRejoin: Bool { isPro }
+    var canUseCustomThemes: Bool { isPro }
+    var canUseUpdateChannel: Bool { isPro }
+    var canUseDetailedPresence: Bool { isPro }
+    var canViewFullHistory: Bool { isPro }
+    var canUseCustomFPS: Bool { isPro }
+    var canUseUnlimitedFavorites: Bool { isPro }
+    var maxFreeHistory: Int { 5 }
+    var maxFreeFavorites: Int { 3 }
+    var freeFPSCap: Int { 120 }
     
     func canUseModCategory(_ categoryId: String) -> Bool {
         guard let cat = ModsManager.categories.first(where: { $0.id == categoryId }) else {

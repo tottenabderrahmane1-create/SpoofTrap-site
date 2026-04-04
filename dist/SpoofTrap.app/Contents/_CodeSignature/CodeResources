@@ -8,6 +8,18 @@
 		<data>
 		LvGpX1J1a0xDTb2UvQMBq8UuHv4=
 		</data>
+		<key>Resources/SpoofTrap_SpoofTrap.bundle/bin/spoofdpi</key>
+		<data>
+		4tnTFeZaF79pFPA/EckFJUVGB/I=
+		</data>
+		<key>Resources/SpoofTrap_SpoofTrap.bundle/spooftrap-icon.png</key>
+		<data>
+		xjStP9qEilw+NmAfYOndiK4f+aU=
+		</data>
+		<key>Resources/spooftrap-icon.png</key>
+		<data>
+		xjStP9qEilw+NmAfYOndiK4f+aU=
+		</data>
 	</dict>
 	<key>files2</key>
 	<dict>
@@ -16,6 +28,27 @@
 			<key>hash2</key>
 			<data>
 			8ANhsZamfqMAJHxp3iXLR5Jo2deCEHSSXe/QonaDkkU=
+			</data>
+		</dict>
+		<key>Resources/SpoofTrap_SpoofTrap.bundle/bin/spoofdpi</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			y6bJPX6ufCB7Ozz6vi7+llf02lxmk2N6fv3e00K4DPw=
+			</data>
+		</dict>
+		<key>Resources/SpoofTrap_SpoofTrap.bundle/spooftrap-icon.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			W8uvA9ANQlNsE40DENLhM6hRHTs/BxYWzljchl17wPQ=
+			</data>
+		</dict>
+		<key>Resources/spooftrap-icon.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			W8uvA9ANQlNsE40DENLhM6hRHTs/BxYWzljchl17wPQ=
 			</data>
 		</dict>
 	</dict>

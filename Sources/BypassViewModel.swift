@@ -72,6 +72,9 @@ final class BypassViewModel: ObservableObject {
         var httpsDisorder: Bool
         var appLaunchDelay: Int
         var reducedMotion: Bool?
+        var fpsTarget: Int?
+        var accentColorHex: String?
+        var updateChannel: String?
     }
 
     private struct SystemProxyState {
@@ -96,10 +99,20 @@ final class BypassViewModel: ObservableObject {
     @Published private(set) var httpsDisorder = true
     @Published private(set) var appLaunchDelay = 0
     @Published private(set) var reducedMotion = false
+    @Published private(set) var fpsTarget: Int = 60
+    @Published var autoRejoinEnabled: Bool = false
+    @Published private(set) var updateChannel: String = "LIVE"
+    @Published var accentColorHex: String = "#73DBFF"
     @Published private(set) var resolvedBinaryPath: String?
     @Published private(set) var binaryAvailable = false
     @Published var fastFlagsManager = FastFlagsManager()
     @Published var modsManager = ModsManager()
+    @Published var favorites: [FavoriteGame] = []
+    
+    // Launcher features
+    @Published var discordRPC = DiscordRPCManager()
+    @Published var logWatcher = RobloxLogWatcher()
+    @Published var gameHistory = GameHistoryManager()
     
     // Pro Features
     @Published var proManager = ProManager()
@@ -110,6 +123,8 @@ final class BypassViewModel: ObservableObject {
     private var spoofProcess: Process?
     private var outputPipe: Pipe?
     private var launchTask: Task<Void, Never>?
+    private var autoRejoinTask: Task<Void, Never>?
+    private var presenceTask: Task<Void, Never>?
     private var systemProxyState: [SystemProxyState] = []
     private var isRestoringSettings = false
     private let timestampFormatter: DateFormatter = {
@@ -259,6 +274,92 @@ final class BypassViewModel: ObservableObject {
         persistSettings()
     }
 
+    func setFPSTarget(_ newValue: Int) {
+        fpsTarget = newValue
+        if let idx = fastFlagsManager.flags.firstIndex(where: { $0.id == "DFIntTaskSchedulerTargetFps" }) {
+            fastFlagsManager.flags[idx].isEnabled = newValue != 60
+            fastFlagsManager.flags[idx].value = String(newValue)
+            if newValue != 60 && !fastFlagsManager.isEnabled {
+                fastFlagsManager.isEnabled = true
+            }
+        }
+        persistSettings()
+    }
+
+    func addFavorite(name: String, placeId: String) {
+        let fav = FavoriteGame(id: UUID().uuidString, name: name, placeId: placeId, addedAt: Date())
+        favorites.append(fav)
+        saveFavorites()
+    }
+
+    func removeFavorite(_ fav: FavoriteGame) {
+        favorites.removeAll { $0.id == fav.id }
+        saveFavorites()
+    }
+
+    func launchFavorite(_ fav: FavoriteGame) {
+        guard !isRunning else {
+            if let url = URL(string: "roblox://placeId=\(fav.placeId)") {
+                NSWorkspace.shared.open(url)
+                appendLog("Quick launching: \(fav.name)")
+            }
+            return
+        }
+        appendLog("Start a session first, then quick-launch a game.")
+    }
+
+    func setUpdateChannel(_ channel: String) {
+        guard proManager.canUseUpdateChannel else { return }
+        updateChannel = channel
+        let channelFile = (robloxAppPath as NSString)
+            .appendingPathComponent("Contents/MacOS/ClientSettings/RobloxChannel.txt")
+        let dir = (channelFile as NSString).deletingLastPathComponent
+        try? FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: true)
+        try? channel.write(toFile: channelFile, atomically: true, encoding: .utf8)
+        appendLog("Update channel set to \(channel)")
+        persistSettings()
+    }
+
+    func launchMultiInstance() {
+        guard proManager.canUseMultiInstance else {
+            appendLog("Multi-instance requires Pro.")
+            return
+        }
+        guard robloxInstalled else {
+            appendLog("Roblox not found for multi-instance.")
+            return
+        }
+
+        let tempDir = FileManager.default.temporaryDirectory.appendingPathComponent("SpoofTrap-MI-\(UUID().uuidString.prefix(8))")
+
+        do {
+            try FileManager.default.copyItem(
+                at: URL(fileURLWithPath: robloxAppPath),
+                to: tempDir
+            )
+
+            let plistURL = tempDir.appendingPathComponent("Contents/Info.plist")
+            if var plist = NSDictionary(contentsOf: plistURL) as? [String: Any] {
+                plist["CFBundleIdentifier"] = "com.roblox.RobloxPlayer.mi.\(UUID().uuidString.prefix(8))"
+                (plist as NSDictionary).write(to: plistURL, atomically: true)
+            }
+
+            let result = runTool("/usr/bin/open", ["-n", "-a", tempDir.path])
+            if result.status == 0 {
+                appendLog("Multi-instance Roblox launched.")
+            } else {
+                appendLog("Multi-instance launch failed.")
+            }
+
+            Task {
+                try? await Task.sleep(nanoseconds: 30_000_000_000)
+                try? FileManager.default.removeItem(at: tempDir)
+            }
+        } catch {
+            appendLog("Multi-instance setup failed: \(error.localizedDescription)")
+        }
+    }
+
     func chooseRobloxApp() {
         guard !isRunning else {
             appendLog("Stop the session before changing the Roblox path.")
@@ -366,6 +467,10 @@ final class BypassViewModel: ObservableObject {
         }
         
         sessionStats.startSession(proxyMode: proxyScope.rawValue, preset: preset.rawValue)
+        logWatcher.startWatching()
+        discordRPC.connect()
+        startAutoRejoinMonitor()
+        startPresenceUpdater()
 
         Task {
             await runPKill()
@@ -382,6 +487,22 @@ final class BypassViewModel: ObservableObject {
         appendLog("Stopping SpoofTrap session.")
         
         sessionStats.endSession()
+        autoRejoinTask?.cancel()
+        presenceTask?.cancel()
+        logWatcher.stopWatching()
+        discordRPC.clearPresence()
+        discordRPC.disconnect()
+
+        if let lastGame = logWatcher.currentPlaceId {
+            let dur = sessionStats.currentSession?.duration ?? 0
+            gameHistory.recordSession(
+                gameName: logWatcher.currentGameName ?? "Unknown Game",
+                placeId: lastGame,
+                serverRegion: logWatcher.currentRegion ?? "Unknown",
+                preset: preset.rawValue,
+                duration: dur
+            )
+        }
 
         if let process = spoofProcess, process.isRunning {
             process.terminate()
@@ -832,6 +953,9 @@ final class BypassViewModel: ObservableObject {
         httpsDisorder = stored.httpsDisorder
         appLaunchDelay = stored.appLaunchDelay
         reducedMotion = stored.reducedMotion ?? false
+        fpsTarget = stored.fpsTarget ?? 60
+        updateChannel = stored.updateChannel ?? "LIVE"
+        loadFavorites()
     }
 
     private func persistSettings() {
@@ -847,7 +971,9 @@ final class BypassViewModel: ObservableObject {
             httpsChunkSize: httpsChunkSize,
             httpsDisorder: httpsDisorder,
             appLaunchDelay: appLaunchDelay,
-            reducedMotion: reducedMotion
+            reducedMotion: reducedMotion,
+            fpsTarget: fpsTarget,
+            updateChannel: updateChannel
         )
 
         do {
@@ -903,6 +1029,65 @@ final class BypassViewModel: ObservableObject {
     private func appendLog(_ message: String) {
         let stamped = "[\(timestampFormatter.string(from: Date()))] \(message)"
         logs.append(stamped)
+    }
+
+    private func startAutoRejoinMonitor() {
+        autoRejoinTask?.cancel()
+        autoRejoinTask = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: 3_000_000_000)
+                guard let self, self.state == .running, self.autoRejoinEnabled, self.proManager.canUseAutoRejoin else { continue }
+
+                if self.logWatcher.disconnected,
+                   let placeId = self.logWatcher.currentPlaceId {
+                    self.appendLog("Disconnect detected. Auto-rejoining...")
+                    let jobIdPart = self.logWatcher.currentJobId.map { "&gameInstanceId=\($0)" } ?? ""
+                    if let url = URL(string: "roblox://placeId=\(placeId)\(jobIdPart)") {
+                        NSWorkspace.shared.open(url)
+                        self.appendLog("Rejoin launched for place \(placeId)")
+                    }
+                    self.logWatcher.disconnected = false
+                }
+            }
+        }
+    }
+
+    private func startPresenceUpdater() {
+        presenceTask?.cancel()
+        presenceTask = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: 15_000_000_000)
+                guard let self, self.state == .running else { continue }
+
+                let elapsed = self.sessionStats.currentSession?.duration ?? 0
+                if self.proManager.canUseDetailedPresence {
+                    self.discordRPC.updatePresence(
+                        gameName: self.logWatcher.currentGameName,
+                        placeId: self.logWatcher.currentPlaceId,
+                        elapsed: elapsed
+                    )
+                } else {
+                    self.discordRPC.updatePresence(gameName: nil, placeId: nil, elapsed: elapsed)
+                }
+            }
+        }
+    }
+
+    private var favoritesURL: URL {
+        settingsURL.deletingLastPathComponent().appendingPathComponent("favorites.json")
+    }
+
+    private func loadFavorites() {
+        guard let data = try? Data(contentsOf: favoritesURL),
+              let saved = try? JSONDecoder().decode([FavoriteGame].self, from: data) else { return }
+        favorites = saved
+    }
+
+    func saveFavorites() {
+        do {
+            let data = try JSONEncoder().encode(favorites)
+            try data.write(to: favoritesURL, options: .atomic)
+        } catch {}
     }
 
     nonisolated static func locateResourceBundle() -> Bundle? {

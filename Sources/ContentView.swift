@@ -10,7 +10,11 @@ struct ContentView: View {
     @State private var showingFastFlags = false
     @State private var showingMods = false
     @State private var showingStats = false
+    @State private var showingHistory = false
+    @State private var showingFavorites = false
     @State private var copyConfirmation = false
+    @State private var newFavName = ""
+    @State private var newFavPlaceId = ""
 
     var body: some View {
         ZStack {
@@ -68,6 +72,12 @@ struct ContentView: View {
                 if showingMods {
                     modsDetailCard
                 }
+
+                favoritesCard
+                
+                if showingFavorites {
+                    favoritesDetailCard
+                }
                 
                 if showingAdvanced && viewModel.proManager.isPro {
                     advancedCard
@@ -75,6 +85,10 @@ struct ContentView: View {
                 
                 if showingStats && viewModel.proManager.isPro {
                     statsCard
+                }
+
+                if showingHistory {
+                    historyCard
                 }
                 
                 if !viewModel.proManager.isPro {
@@ -233,6 +247,17 @@ struct ContentView: View {
                         )
                     }
                     .buttonStyle(.plain)
+
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            showingHistory.toggle()
+                        }
+                    } label: {
+                        Image(systemName: "clock.arrow.circlepath")
+                            .font(.system(size: 12))
+                            .foregroundStyle(showingHistory ? .mint : .white.opacity(0.4))
+                    }
+                    .buttonStyle(.plain)
                 }
 
                 VStack(alignment: .leading, spacing: 6) {
@@ -302,6 +327,44 @@ struct ContentView: View {
                         .foregroundStyle(.white.opacity(0.4))
                         .lineLimit(1)
                         .truncationMode(.middle)
+                }
+
+                Divider().background(Color.white.opacity(0.1))
+
+                HStack(spacing: 0) {
+                    settingRow(label: "FPS Unlocker") {
+                        HStack(spacing: 8) {
+                            Text(viewModel.fpsTarget == 60 ? "Off" : viewModel.fpsTarget == 9999 ? "Max" : "\(viewModel.fpsTarget)")
+                                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                                .foregroundStyle(viewModel.fpsTarget == 60 ? .white.opacity(0.5) : .cyan)
+                                .frame(width: 36)
+                            
+                            Picker("", selection: Binding(
+                                get: { viewModel.fpsTarget },
+                                set: { viewModel.setFPSTarget($0) }
+                            )) {
+                                Text("60").tag(60)
+                                Text("120").tag(120)
+                                if viewModel.proManager.canUseCustomFPS {
+                                    Text("144").tag(144)
+                                    Text("240").tag(240)
+                                    Text("Max").tag(9999)
+                                }
+                            }
+                            .labelsHidden()
+                            .frame(width: 70)
+                            .disabled(viewModel.isRunning)
+                        }
+                    }
+                }
+                if !viewModel.proManager.canUseCustomFPS {
+                    HStack(spacing: 4) {
+                        Image(systemName: "lock.fill")
+                            .font(.system(size: 8))
+                        Text("Pro unlocks 144, 240 & Max FPS")
+                            .font(.system(size: 10, weight: .medium, design: .rounded))
+                    }
+                    .foregroundStyle(.yellow.opacity(0.6))
                 }
             }
         }
@@ -378,10 +441,95 @@ struct ContentView: View {
                         .font(.system(size: 10, weight: .medium, design: .rounded))
                         .foregroundStyle(.white.opacity(0.4))
                 }
+
+                Divider().background(Color.white.opacity(0.1))
+
+                settingRow(label: "Auto-Rejoin") {
+                    Toggle("", isOn: Binding(
+                        get: { viewModel.autoRejoinEnabled },
+                        set: { viewModel.autoRejoinEnabled = $0 }
+                    ))
+                    .labelsHidden()
+                    .toggleStyle(.switch)
+                    .controlSize(.small)
+                    .tint(.purple)
+                }
+                Text("Rejoin same server on disconnect")
+                    .font(.system(size: 10, weight: .medium, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.4))
+
+                settingRow(label: "Multi-Instance") {
+                    Button {
+                        viewModel.launchMultiInstance()
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "square.on.square")
+                                .font(.system(size: 10))
+                            Text("Launch")
+                        }
+                        .font(.system(size: 11, weight: .semibold, design: .rounded))
+                        .foregroundStyle(.white.opacity(0.8))
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(Color.white.opacity(0.08))
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(!viewModel.robloxInstalled)
+                }
+
+                Divider().background(Color.white.opacity(0.1))
+
+                settingRow(label: "Update Channel") {
+                    Picker("", selection: Binding(
+                        get: { viewModel.updateChannel },
+                        set: { viewModel.setUpdateChannel($0) }
+                    )) {
+                        Text("Live").tag("LIVE")
+                        Text("ZNext").tag("ZNext")
+                        Text("ZCanary").tag("ZCanary")
+                    }
+                    .labelsHidden()
+                    .frame(width: 90)
+                    .disabled(viewModel.isRunning)
+                }
+                Text("Roblox release channel for early access features")
+                    .font(.system(size: 10, weight: .medium, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.4))
+
+                Divider().background(Color.white.opacity(0.1))
+
+                settingRow(label: "Accent Color") {
+                    HStack(spacing: 6) {
+                        ForEach(Self.accentOptions, id: \.hex) { option in
+                            Circle()
+                                .fill(option.color)
+                                .frame(width: 18, height: 18)
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.white, lineWidth: viewModel.accentColorHex == option.hex ? 2 : 0)
+                                )
+                                .onTapGesture {
+                                    viewModel.accentColorHex = option.hex
+                                }
+                        }
+                    }
+                }
             }
         }
         .transition(.opacity.combined(with: .move(edge: .top)))
     }
+
+    private static let accentOptions: [(hex: String, color: Color)] = [
+        ("#73DBFF", Color(red: 0.45, green: 0.86, blue: 1.0)),
+        ("#FF6B6B", Color(red: 1.0, green: 0.42, blue: 0.42)),
+        ("#A78BFA", Color(red: 0.65, green: 0.55, blue: 0.98)),
+        ("#34D399", Color(red: 0.20, green: 0.83, blue: 0.60)),
+        ("#FBBF24", Color(red: 0.98, green: 0.75, blue: 0.14)),
+        ("#F472B6", Color(red: 0.96, green: 0.45, blue: 0.71)),
+    ]
 
     private var fastFlagsCard: some View {
         glassCard {
@@ -817,6 +965,11 @@ struct ContentView: View {
                     upgradeFeatureRow(icon: "puzzlepiece.fill", text: "Custom mod imports")
                     upgradeFeatureRow(icon: "gearshape.2.fill", text: "Advanced settings")
                     upgradeFeatureRow(icon: "chart.bar.fill", text: "Detailed session stats")
+                    upgradeFeatureRow(icon: "gauge.high", text: "Custom FPS targets (144/240/Max)")
+                    upgradeFeatureRow(icon: "square.on.square", text: "Multi-instance launching")
+                    upgradeFeatureRow(icon: "arrow.clockwise", text: "Auto-rejoin on disconnect")
+                    upgradeFeatureRow(icon: "paintpalette.fill", text: "Custom app themes")
+                    upgradeFeatureRow(icon: "clock.arrow.circlepath", text: "Full game history")
                 }
                 
                 Divider().background(.white.opacity(0.2))
@@ -880,6 +1033,339 @@ struct ContentView: View {
         }
     }
     
+    // MARK: - Favorites Card
+
+    private var favoritesCard: some View {
+        glassCard {
+            VStack(alignment: .leading, spacing: 16) {
+                HStack {
+                    HStack(spacing: 8) {
+                        sectionTitle("Quick Launch")
+                        if !viewModel.favorites.isEmpty {
+                            Text("\(viewModel.favorites.count)")
+                                .font(.system(size: 9, weight: .bold, design: .rounded))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Capsule().fill(Color.orange))
+                        }
+                    }
+                    Spacer()
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            showingFavorites.toggle()
+                        }
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "star.fill")
+                                .font(.system(size: 10))
+                            Text(showingFavorites ? "Hide" : "Manage")
+                        }
+                        .font(.system(size: 12, weight: .semibold, design: .rounded))
+                        .foregroundStyle(.orange.opacity(0.8))
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                if viewModel.favorites.isEmpty {
+                    Text("Add favorite games for one-click launching")
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .foregroundStyle(.white.opacity(0.4))
+                } else {
+                    ForEach(viewModel.favorites.prefix(3)) { fav in
+                        Button {
+                            viewModel.launchFavorite(fav)
+                        } label: {
+                            HStack(spacing: 10) {
+                                Image(systemName: "play.circle.fill")
+                                    .font(.system(size: 16))
+                                    .foregroundStyle(.orange)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(fav.name)
+                                        .font(.system(size: 12, weight: .semibold, design: .rounded))
+                                        .foregroundStyle(.white)
+                                    Text("Place: \(fav.placeId)")
+                                        .font(.system(size: 9, weight: .medium, design: .monospaced))
+                                        .foregroundStyle(.white.opacity(0.4))
+                                }
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 10))
+                                    .foregroundStyle(.white.opacity(0.3))
+                            }
+                            .padding(.vertical, 4)
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(!viewModel.isRunning)
+                    }
+                }
+            }
+        }
+    }
+
+    private var favoritesDetailCard: some View {
+        glassCard {
+            VStack(alignment: .leading, spacing: 14) {
+                Text("Add Favorite")
+                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+
+                VStack(spacing: 8) {
+                    TextField("Game Name", text: $newFavName)
+                        .textFieldStyle(.plain)
+                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .foregroundStyle(.white)
+                        .padding(8)
+                        .background(.white.opacity(0.08))
+                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+
+                    TextField("Place ID (e.g. 606849621)", text: $newFavPlaceId)
+                        .textFieldStyle(.plain)
+                        .font(.system(size: 12, weight: .medium, design: .monospaced))
+                        .foregroundStyle(.white)
+                        .padding(8)
+                        .background(.white.opacity(0.08))
+                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+
+                    HStack {
+                        let atLimit = !viewModel.proManager.canUseUnlimitedFavorites && viewModel.favorites.count >= viewModel.proManager.maxFreeFavorites
+                        Button {
+                            guard !newFavName.isEmpty, !newFavPlaceId.isEmpty else { return }
+                            viewModel.addFavorite(name: newFavName, placeId: newFavPlaceId)
+                            newFavName = ""
+                            newFavPlaceId = ""
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "plus")
+                                Text("Add")
+                            }
+                            .font(.system(size: 12, weight: .semibold, design: .rounded))
+                            .foregroundStyle(.black)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(Color.orange)
+                            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(newFavName.isEmpty || newFavPlaceId.isEmpty || atLimit)
+
+                        if atLimit {
+                            Text("Pro for unlimited")
+                                .font(.system(size: 10, weight: .medium, design: .rounded))
+                                .foregroundStyle(.yellow.opacity(0.7))
+                        }
+                    }
+                }
+
+                if !viewModel.favorites.isEmpty {
+                    Divider().background(Color.white.opacity(0.1))
+                    ForEach(viewModel.favorites) { fav in
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(fav.name)
+                                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                                    .foregroundStyle(.white)
+                                Text(fav.placeId)
+                                    .font(.system(size: 9, weight: .medium, design: .monospaced))
+                                    .foregroundStyle(.white.opacity(0.4))
+                            }
+                            Spacer()
+                            Button {
+                                viewModel.removeFavorite(fav)
+                            } label: {
+                                Image(systemName: "trash")
+                                    .font(.system(size: 11))
+                                    .foregroundStyle(.red.opacity(0.7))
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        .padding(.vertical, 2)
+                    }
+                }
+            }
+        }
+        .transition(.opacity.combined(with: .move(edge: .top)))
+    }
+
+    // MARK: - Live Info Card (Server Region, Discord, Game Info)
+
+    private var liveInfoCard: some View {
+        glassCard {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: 8) {
+                    Image(systemName: "globe")
+                        .font(.system(size: 12))
+                        .foregroundStyle(.cyan)
+                    Text("Live Info")
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .foregroundStyle(.white)
+                    Spacer()
+                    if viewModel.logWatcher.isInGame {
+                        HStack(spacing: 4) {
+                            Circle().fill(.green).frame(width: 6, height: 6)
+                            Text("In Game")
+                                .font(.system(size: 10, weight: .semibold, design: .rounded))
+                                .foregroundStyle(.green)
+                        }
+                    }
+                }
+
+                if let gameName = viewModel.logWatcher.currentGameName {
+                    HStack(spacing: 8) {
+                        Image(systemName: "gamecontroller.fill")
+                            .font(.system(size: 11))
+                            .foregroundStyle(.purple)
+                        Text(gameName)
+                            .font(.system(size: 12, weight: .semibold, design: .rounded))
+                            .foregroundStyle(.white)
+                            .lineLimit(1)
+                    }
+                }
+
+                if let region = viewModel.logWatcher.currentRegion {
+                    HStack(spacing: 8) {
+                        Image(systemName: "mappin.circle.fill")
+                            .font(.system(size: 11))
+                            .foregroundStyle(.orange)
+                        Text(region)
+                            .font(.system(size: 12, weight: .medium, design: .rounded))
+                            .foregroundStyle(.white.opacity(0.8))
+                    }
+                }
+
+                if let ip = viewModel.logWatcher.currentServerIP, viewModel.proManager.isPro {
+                    HStack(spacing: 8) {
+                        Image(systemName: "network")
+                            .font(.system(size: 11))
+                            .foregroundStyle(.mint)
+                        Text(ip)
+                            .font(.system(size: 10, weight: .medium, design: .monospaced))
+                            .foregroundStyle(.white.opacity(0.5))
+                    }
+                }
+
+                Divider().background(Color.white.opacity(0.1))
+
+                HStack(spacing: 8) {
+                    Image(systemName: "bubble.left.and.bubble.right.fill")
+                        .font(.system(size: 11))
+                        .foregroundStyle(viewModel.discordRPC.isConnected ? .green : .white.opacity(0.3))
+                    Text(viewModel.discordRPC.isConnected ? "Discord Connected" : "Discord Not Connected")
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .foregroundStyle(.white.opacity(0.6))
+                    Spacer()
+                    Toggle("", isOn: Binding(
+                        get: { viewModel.discordRPC.isEnabled },
+                        set: {
+                            viewModel.discordRPC.isEnabled = $0
+                            if $0 { viewModel.discordRPC.connect() }
+                            else { viewModel.discordRPC.disconnect() }
+                        }
+                    ))
+                    .labelsHidden()
+                    .toggleStyle(.switch)
+                    .controlSize(.small)
+                    .tint(.green)
+                }
+
+                if !viewModel.proManager.canUseDetailedPresence {
+                    HStack(spacing: 4) {
+                        Image(systemName: "lock.fill")
+                            .font(.system(size: 8))
+                        Text("Pro shows game name & join button on Discord")
+                            .font(.system(size: 10, weight: .medium, design: .rounded))
+                    }
+                    .foregroundStyle(.yellow.opacity(0.6))
+                }
+            }
+        }
+        .transition(.opacity.combined(with: .move(edge: .top)))
+    }
+
+    // MARK: - History Card
+
+    private var historyCard: some View {
+        glassCard {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack(spacing: 8) {
+                    Image(systemName: "clock.arrow.circlepath")
+                        .font(.system(size: 12))
+                        .foregroundStyle(.mint)
+                    Text("Game History")
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .foregroundStyle(.white)
+                    Spacer()
+                    if !viewModel.gameHistory.sessions.isEmpty {
+                        Button {
+                            viewModel.gameHistory.clearHistory()
+                        } label: {
+                            Text("Clear")
+                                .font(.system(size: 10, weight: .semibold, design: .rounded))
+                                .foregroundStyle(.red.opacity(0.7))
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+
+                let displaySessions = viewModel.proManager.canViewFullHistory
+                    ? viewModel.gameHistory.sessions
+                    : Array(viewModel.gameHistory.sessions.prefix(viewModel.proManager.maxFreeHistory))
+
+                if displaySessions.isEmpty {
+                    Text("No games played yet")
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .foregroundStyle(.white.opacity(0.4))
+                } else {
+                    ForEach(displaySessions) { session in
+                        HStack(spacing: 10) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(session.gameName)
+                                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                                    .foregroundStyle(.white)
+                                    .lineLimit(1)
+                                HStack(spacing: 6) {
+                                    Text(session.serverRegion)
+                                        .font(.system(size: 9, weight: .medium, design: .rounded))
+                                        .foregroundStyle(.white.opacity(0.4))
+                                    Text("·")
+                                        .foregroundStyle(.white.opacity(0.3))
+                                    Text(formatDuration(session.duration))
+                                        .font(.system(size: 9, weight: .medium, design: .rounded))
+                                        .foregroundStyle(.white.opacity(0.4))
+                                }
+                            }
+                            Spacer()
+                            Text(formatDate(session.startTime))
+                                .font(.system(size: 9, weight: .medium, design: .rounded))
+                                .foregroundStyle(.white.opacity(0.3))
+                        }
+                        .padding(.vertical, 2)
+                    }
+
+                    if !viewModel.proManager.canViewFullHistory && viewModel.gameHistory.sessions.count > viewModel.proManager.maxFreeHistory {
+                        Text("Upgrade to Pro for full history")
+                            .font(.system(size: 10, weight: .medium, design: .rounded))
+                            .foregroundStyle(.yellow.opacity(0.7))
+                    }
+                }
+            }
+        }
+        .transition(.opacity.combined(with: .move(edge: .top)))
+    }
+
+    private func formatDuration(_ duration: TimeInterval) -> String {
+        let mins = Int(duration) / 60
+        if mins < 60 { return "\(mins)m" }
+        return "\(mins / 60)h \(mins % 60)m"
+    }
+
+    private func formatDate(_ date: Date) -> String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .abbreviated
+        return formatter.localizedString(for: date, relativeTo: Date())
+    }
+
     private func activateLicense() {
         guard !licenseKeyInput.isEmpty else { return }
         
@@ -1025,6 +1511,9 @@ struct ContentView: View {
     private var rightColumn: some View {
         VStack(spacing: 16) {
             sessionCard
+            if viewModel.isRunning {
+                liveInfoCard
+            }
             logCard
         }
         .frame(maxWidth: .infinity)
