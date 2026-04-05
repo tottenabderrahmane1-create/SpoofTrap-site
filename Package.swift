@@ -17,6 +17,11 @@ let package = Package(
                 .copy("Resources/spooftrap-icon.png"),
                 .copy("Resources/bin")
             ]
+        ),
+        .testTarget(
+            name: "SpoofTrapTests",
+            dependencies: ["SpoofTrap"],
+            path: "Tests"
         )
     ]
 )
