@@ -52,8 +52,8 @@ final class RobloxLogWatcher: ObservableObject {
 
         guard let text = String(data: data, encoding: .utf8) else { return }
 
-        for line in text.components(separatedBy: .newlines) {
-            parseLine(line)
+        text.enumerateLines { line, _ in
+            self.parseLine(line)
         }
     }
 
