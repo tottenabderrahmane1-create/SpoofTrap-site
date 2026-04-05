@@ -1,18 +1,18 @@
 const fallbackRelease = {
-  version: "1.5.0",
-  generatedAt: "2026-04-05T09:45:00Z",
+  version: "1.5.1",
+  generatedAt: "2026-04-05T10:15:00Z",
   artifacts: {
     pkg: {
       file: "SpoofTrap.pkg",
-      sha256: "c60655e70d0f4f756d2291fea8d06add877002d0757107aaf0122ee915be1dd4",
+      sha256: "ccb3ec8483aaec8eea38f63533298d32568aed8e9f474f8a02aecef40d0c2133",
     },
     zip: {
       file: "SpoofTrap.zip",
-      sha256: "3d22d6e10e8cdae81125c753e5c3714874bd3664a1a59edb11596561e23876b7",
+      sha256: "bd6fb888452113e615e1b1bb2152cfd15dce9f16b15141438612aa230d180e2b",
     },
     dmg: {
       file: "SpoofTrap.dmg",
-      sha256: "12359b4a1baff191b5ef7160db6b7836d5d761ec18cfecf862287f116ad04ff6",
+      sha256: "d2ebfedb7cb433b47e6b94d07e20d752dc5c7616a6cd07b90018c249c47dbce0",
     },
   },
 };

@@ -1,32 +1,27 @@
 {
-  "version": "1.5.0",
-  "generatedAt": "2026-04-05T09:45:00Z",
+  "version": "1.5.1",
+  "generatedAt": "2026-04-05T10:15:00Z",
   "artifacts": {
     "pkg": {
       "file": "SpoofTrap.pkg",
-      "sha256": "c60655e70d0f4f756d2291fea8d06add877002d0757107aaf0122ee915be1dd4"
+      "sha256": "ccb3ec8483aaec8eea38f63533298d32568aed8e9f474f8a02aecef40d0c2133"
     },
     "zip": {
       "file": "SpoofTrap.zip",
-      "sha256": "3d22d6e10e8cdae81125c753e5c3714874bd3664a1a59edb11596561e23876b7"
+      "sha256": "bd6fb888452113e615e1b1bb2152cfd15dce9f16b15141438612aa230d180e2b"
     },
     "dmg": {
       "file": "SpoofTrap.dmg",
-      "sha256": "12359b4a1baff191b5ef7160db6b7836d5d761ec18cfecf862287f116ad04ff6"
+      "sha256": "d2ebfedb7cb433b47e6b94d07e20d752dc5c7616a6cd07b90018c249c47dbce0"
     }
   },
   "changelog": [
-    "New: Real-time ping display in Live Info card (color-coded)",
-    "New: Smart Server Picker — join lowest-ping server (Pro)",
-    "New: Low Ping FastFlags preset with 11 network-tuning flags (Pro)",
-    "New: DNS pre-cache — 18 Roblox domains pre-resolved on start (Pro)",
-    "New: Process Priority Boost for Roblox (Pro)",
-    "New: Icon mod now replaces Dock icon + in-game texture with re-signing",
-    "Fix: Live Info, Discord, stats now update in real-time (nested observable fix)",
-    "Fix: FPS bypass via presets blocked for free users",
-    "Fix: Pro mods enforced at runtime, not just UI",
-    "Fix: Discord RPC no longer blocks main thread",
-    "Fix: Accent color, auto-rejoin, update banner state now persist"
+    "New: Global hotkeys (Cmd+Shift+S/H/O/E) work even with Roblox focused",
+    "New: macOS notifications for session start, stop, disconnect, auto-rejoin",
+    "New: Log export to .txt file",
+    "New: FPS display in Live Info and Performance Overlay",
+    "New: Roblox Log Viewer tab with 500-line raw log, color-coded",
+    "New: Hotkey hints in log card footer"
   ],
   "minimumOS": "13.0"
 }
