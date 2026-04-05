@@ -1,28 +1,28 @@
 {
-  "version": "1.5.1",
-  "generatedAt": "2026-04-05T10:30:00Z",
+  "version": "1.6.0",
+  "generatedAt": "2026-03-29T12:00:00Z",
   "artifacts": {
     "pkg": {
       "file": "SpoofTrap.pkg",
-      "sha256": "e7f4d821dc5503779814b526f8b09cfbdb2a28ad7c5aed768c154f9b3517ac82"
+      "sha256": "a83de0f24ac79d6885f4c0014c1cc049033132853b9786c600b0e55a90e356da"
     },
     "zip": {
       "file": "SpoofTrap.zip",
-      "sha256": "524584d68f3c36fb6e6e5835bdddc82a98150a116b676e14da89ed4623bf2e4f"
+      "sha256": "18c4ba38c4729c58c0c2b6c82d017aede4f1e8badd4cac8c4c16881ad53a44f1"
     },
     "dmg": {
       "file": "SpoofTrap.dmg",
-      "sha256": "d1598d095b396c41dbbc3506433ca4ff0f24734e3f6951b3be85ef8b99bfdabf"
+      "sha256": "c15791ea415813f7a7d7eee36b3f88461a11569add96d0fe9c56414411d6e4af"
     }
   },
   "changelog": [
-    "New: Global hotkeys (Cmd+Shift+S/H/O/E) work even with Roblox focused",
-    "New: macOS notifications for session start, stop, disconnect, auto-rejoin",
-    "New: Log export to .txt file",
-    "New: FPS display in Live Info and Performance Overlay",
-    "New: Roblox Log Viewer tab with 500-line raw log, color-coded",
-    "New: Hotkey hints in log card footer",
-    "Fix: App bundle properly code-signed for macOS launch"
+    "New: Game Search — search Roblox games by name, see thumbnails, player count, ratings, launch directly",
+    "New: Player Join/Leave Tracker — real-time player activity feed from Roblox logs",
+    "New: FastFlag Profiles — save and load named flag configurations for quick switching",
+    "New: Cache Cleaner — scan and clean Roblox logs, cache, temp files with size display",
+    "New: Game Thumbnails — favorites and history now show game icons from Roblox API",
+    "Fix: Game Search routes through bypass proxy when session is active",
+    "Fix: Proper error messages for API timeouts and connection failures"
   ],
   "minimumOS": "13.0"
 }
