@@ -1,25 +1,28 @@
 {
-  "version": "1.4.1",
-  "releaseDate": "2026-04-04",
+  "version": "1.5.0",
+  "releaseDate": "2026-04-05",
   "downloads": {
     "zip": {
       "url": "https://raw.githubusercontent.com/spooftrap-app/SpoofTrap-site/main/docs/dist/SpoofTrap.zip",
-      "sha256": "9ee64cd6798078e087bbf0d101b82b1ac659de3bfc98f369461927bcce75e3f4"
-    },
-    "pkg": {
-      "url": "https://raw.githubusercontent.com/spooftrap-app/SpoofTrap-site/main/docs/dist/SpoofTrap.pkg",
-      "sha256": "adabdffcecbcdf4edf694cb9e15219ae9ad4c5940c8377e2d61a1466d9078221"
+      "sha256": "3d22d6e10e8cdae81125c753e5c3714874bd3664a1a59edb11596561e23876b7"
     },
     "dmg": {
       "url": "https://raw.githubusercontent.com/spooftrap-app/SpoofTrap-site/main/docs/dist/SpoofTrap.dmg",
-      "sha256": "ffe5158a0d67622cc81776ff9b6087cda0f0ce32b65a57846e493cf1df2c1bda"
+      "sha256": "12359b4a1baff191b5ef7160db6b7836d5d761ec18cfecf862287f116ad04ff6"
     }
   },
   "changelog": [
-    "Change: FastFlags editor now free for all users (edit existing flags)",
-    "New: Add Custom Flags (Pro) — type any FFlag name + value",
-    "New: Delete button for custom flags",
-    "Fix: FastFlags Edit button no longer locked for free users"
+    "New: Real-time ping display in Live Info card (color-coded)",
+    "New: Smart Server Picker — join lowest-ping server (Pro)",
+    "New: Low Ping FastFlags preset with 11 network-tuning flags (Pro)",
+    "New: DNS pre-cache — 18 Roblox domains pre-resolved on start (Pro)",
+    "New: Process Priority Boost for Roblox (Pro)",
+    "New: Icon mod now replaces Dock icon + in-game texture with re-signing",
+    "Fix: Live Info, Discord, stats now update in real-time (nested observable fix)",
+    "Fix: FPS bypass via presets blocked for free users",
+    "Fix: Pro mods enforced at runtime, not just UI",
+    "Fix: Discord RPC no longer blocks main thread",
+    "Fix: Accent color, auto-rejoin, update banner state now persist"
   ],
-  "minimumOS": "12.0"
+  "minimumOS": "13.0"
 }
