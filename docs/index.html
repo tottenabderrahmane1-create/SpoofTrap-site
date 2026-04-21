@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SpoofTrap | macOS Roblox Launcher</title>
+    <meta name="theme-color" content="#070d18" />
+    <title>SpoofTrap — Roblox launcher for restricted networks</title>
     <meta
       name="description"
       content="Launch Roblox on restrictive networks with a cleaner local macOS flow."
@@ -43,21 +44,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260324b" />
+    <link rel="stylesheet" href="./styles.css?v=20260420a" />
   </head>
   <body>
     <div class="page-shell">
-      <div class="background-orb orb-one"></div>
-      <div class="background-orb orb-two"></div>
       <div class="background-grid"></div>
 
       <header class="site-header">
         <a class="brand" href="#top" aria-label="SpoofTrap home">
-          <img src="./assets/spooftrap-icon.png" alt="SpoofTrap icon" />
-          <span>SpoofTrap</span>
+          <img src="./assets/spooftrap-icon.png" alt="" />
+          <span class="brand-text">SpoofTrap</span>
         </a>
         <nav class="site-nav" aria-label="Primary">
           <a href="#download">Download</a>
@@ -86,24 +85,33 @@
       <main id="top">
         <section class="hero" id="promo">
           <div class="hero-copy glass-panel">
-            <div class="eyebrow">
-              <span class="status-dot"></span>
-              Promo
+            <div class="hero-status">
+              <span class="dot"></span>
+              <span>v1.7.2 stable</span>
+              <span class="sep">·</span>
+              <span>macOS 13+</span>
+              <span class="sep">·</span>
+              <span>bundled spoofdpi</span>
             </div>
+            <span class="eyebrow">macos launcher</span>
             <h1>
-              Launch Roblox on networks that usually block it.
+              Launch Roblox on<br />
+              <span class="word-rotator" aria-label="restricted networks">
+                <span class="word" aria-hidden="true">school WiFi</span>
+                <span class="word" aria-hidden="true">dorm networks</span>
+                <span class="word" aria-hidden="true">restricted networks</span>
+                <span class="word" aria-hidden="true">blocked WiFi</span>
+              </span>
             </h1>
             <p class="hero-text">
               A macOS Roblox launcher made for restrictive networks, cleaner
               setup, and faster recovery when the usual launch path fails.
             </p>
 
-            <div class="hero-meta" aria-label="Platform status">
-              <span>Restricted networks</span>
-              <span>Promo video</span>
-              <span>Real app UI</span>
-              <span>macOS live</span>
-              <span>Windows public beta</span>
+            <div class="hero-meta" aria-label="Highlights">
+              <span>open source</span>
+              <span>code-signed</span>
+              <span>free forever</span>
             </div>
 
             <div class="hero-actions">
@@ -114,35 +122,22 @@
                 target="_blank"
                 rel="noreferrer"
               >
-                View GitHub
+                View source
               </a>
-            </div>
-
-            <div class="hero-proof-card">
-              <div class="hero-proof-image">
-                <img
-                  src="./assets/app-screenshot.jpeg"
-                  alt="SpoofTrap app screenshot showing the Roblox Launch Workspace and session log"
-                />
-              </div>
-              <div class="hero-proof-copy">
-                <strong>Real app screenshot</strong>
-                <span>Choose Roblox.app, pick a preset, and start the local flow from one workspace.</span>
-              </div>
             </div>
           </div>
 
           <div class="hero-visual glass-panel hero-promo-panel" aria-label="SpoofTrap promo video">
             <div class="hero-promo-top">
-              <span class="hero-promo-pill">Promo video</span>
-              <span class="hero-promo-pill hero-promo-pill-muted">YouTube</span>
+              <span class="hero-promo-pill">// promo</span>
+              <span class="hero-promo-pill hero-promo-pill-muted">youtube</span>
             </div>
 
             <div class="hero-promo-brand">
               <img src="./assets/spooftrap-icon.png" alt="" />
               <div>
                 <strong>SpoofTrap</strong>
-                <span>Restricted-network Roblox launcher</span>
+                <span>Roblox launcher for restricted networks</span>
               </div>
             </div>
 
@@ -158,75 +153,50 @@
                 ></iframe>
               </div>
             </div>
-
-            <div class="hero-promo-footer">
-              <div class="platform-card platform-card-live">
-                <span class="platform-card-badge">
-                  <img src="./assets/platform-macos.png" alt="" />
-                </span>
-                <div class="platform-card-copy">
-                  <strong>Available on</strong>
-                  <span class="platform-card-name">macOS</span>
-                </div>
-              </div>
-              <div class="platform-card platform-card-soon">
-                <span class="platform-card-badge platform-card-badge-windows" aria-hidden="true">
-                  <span class="windows-glyph">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </span>
-                </span>
-                <div class="platform-card-copy">
-                  <strong>Public beta</strong>
-                  <span class="platform-card-name">Windows</span>
-                </div>
-              </div>
-            </div>
           </div>
         </section>
 
         <section class="content-section" id="features">
-          <div class="section-heading">
-            <span class="section-tag">Features</span>
+          <div class="section-heading reveal">
+            <span class="section-tag">features</span>
             <h2>Everything important, quickly.</h2>
+            <div class="section-rule"></div>
           </div>
 
           <div class="feature-grid">
-            <article class="feature-card glass-panel">
+            <article class="feature-card glass-panel reveal">
               <h3>Restricted-ready</h3>
               <p>Made for school, office, and shared networks that block normal access.</p>
             </article>
-            <article class="feature-card glass-panel">
+            <article class="feature-card glass-panel reveal">
               <h3>FPS Unlocker</h3>
               <p>Remove the 60fps cap with a single toggle. Free: 120fps. Pro: 144, 240, or unlimited.</p>
             </article>
-            <article class="feature-card glass-panel">
+            <article class="feature-card glass-panel reveal">
               <h3>Discord Rich Presence</h3>
               <p>Show what you're playing on your Discord profile with game name, time, and join button.</p>
             </article>
-            <article class="feature-card glass-panel">
+            <article class="feature-card glass-panel reveal">
               <h3>Quick Launch &amp; Favorites</h3>
               <p>Pin your favorite games for one-click launching via deep links — skip the Roblox app.</p>
             </article>
-            <article class="feature-card glass-panel">
+            <article class="feature-card glass-panel reveal">
               <h3>Server Region Display</h3>
               <p>See which datacenter you're connected to in real time with GeoIP lookup.</p>
             </article>
-            <article class="feature-card glass-panel">
+            <article class="feature-card glass-panel reveal">
               <h3>Auto-Rejoin</h3>
               <p>Disconnected? SpoofTrap detects it and rejoins the same server automatically.</p>
             </article>
-            <article class="feature-card glass-panel">
+            <article class="feature-card glass-panel reveal">
               <h3>File Replacement Mods</h3>
               <p>Swap death sounds, cursors, fonts, app icon, and avatar backgrounds — Bloxstrap-style.</p>
             </article>
-            <article class="feature-card glass-panel">
+            <article class="feature-card glass-panel reveal">
               <h3>FastFlags &amp; Presets</h3>
               <p>Curated flag presets plus a full editor for fine-tuning Roblox rendering and behavior.</p>
             </article>
-            <article class="feature-card glass-panel">
+            <article class="feature-card glass-panel reveal">
               <h3>Multi-Instance</h3>
               <p>Run multiple Roblox windows at once for alt accounts or testing. Pro only.</p>
             </article>
@@ -234,14 +204,15 @@
         </section>
 
         <section class="content-section download-section" id="download">
-          <div class="section-heading">
-            <span class="section-tag">Download</span>
+          <div class="section-heading reveal">
+            <span class="section-tag">download</span>
             <h2>Download for macOS.</h2>
+            <div class="section-rule"></div>
           </div>
 
-          <div class="download-panel glass-panel">
+          <div class="download-panel glass-panel reveal">
             <div class="download-summary">
-              <span class="download-label">Current release</span>
+              <span class="download-label">current release</span>
               <strong id="version-label">v1.7.2</strong>
               <p id="generated-at">Bundled spoofdpi in every download — signed DMG, ZIP, PKG.</p>
               <div class="download-platforms" aria-label="Platform status">
@@ -272,7 +243,7 @@
                 href="./dist/SpoofTrap.dmg"
                 download
               >
-                <span class="card-tag">Recommended</span>
+                <span class="card-tag">recommended</span>
                 <h3>DMG Release</h3>
                 <p>The cleanest install for most people. Download, open, and launch.</p>
                 <span class="download-cta">Download DMG</span>
@@ -280,7 +251,7 @@
               </a>
 
               <article class="download-card download-card-alt-builds" aria-label="Additional macOS builds">
-                <span class="card-tag">Other builds</span>
+                <span class="card-tag">other builds</span>
                 <h3>Need another format?</h3>
                 <p>Use PKG for the installer flow or ZIP for the raw packaged folder.</p>
                 <div class="download-secondary-actions">
@@ -316,7 +287,7 @@
                       </span>
                     </span>
                     <div class="coming-soon-copy">
-                      <span class="card-tag">Public beta</span>
+                      <span class="card-tag">public beta</span>
                       <h3>Windows</h3>
                     </div>
                   </div>
@@ -330,7 +301,7 @@
             </div>
 
             <div class="first-run-strip" aria-label="First run steps">
-              <span class="download-label">First run</span>
+              <span class="download-label">first run</span>
               <div class="first-run-flow">
                 <div class="first-run-step">
                   <span class="first-run-step-number">1</span>
@@ -361,8 +332,38 @@
           </div>
         </section>
       </main>
+
+      <footer class="site-footer">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a class="brand" href="./index.html" aria-label="SpoofTrap home">
+              <img src="./assets/spooftrap-icon.png" alt="" />
+              <span class="brand-text">SpoofTrap</span>
+            </a>
+            <p class="footer-tagline">Roblox launcher for restricted networks. Free, open source, made for school and shared networks that block normal access.</p>
+          </div>
+          <div class="footer-col">
+            <span class="footer-col-title">product</span>
+            <a href="./index.html#download">Download</a>
+            <a href="./macos.html">macOS</a>
+            <a href="./windows.html">Windows</a>
+            <a href="./pricing.html">Pricing</a>
+          </div>
+          <div class="footer-col">
+            <span class="footer-col-title">connect</span>
+            <a href="https://github.com/spooftrap-app/SpoofTrap" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://discord.gg/32UmsRfVha" target="_blank" rel="noreferrer">Discord</a>
+            <a href="./socials.html">All socials</a>
+          </div>
+        </div>
+        <div class="footer-meta">
+          <span>// © 2026 SpoofTrap</span>
+          <span>not affiliated with Roblox Corporation</span>
+        </div>
+      </footer>
     </div>
 
-    <script src="./script.js?v=20260324b"></script>
+    <script src="./script.js?v=20260420a"></script>
+    <script src="./animations.js?v=20260420a" defer></script>
   </body>
 </html>

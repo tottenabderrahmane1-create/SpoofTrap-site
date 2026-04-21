@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SpoofTrap | Free vs Pro</title>
+    <meta name="theme-color" content="#070d18" />
+    <title>SpoofTrap — Pricing</title>
     <meta
       name="description"
       content="SpoofTrap is free to download. Pro unlocks with a license key from Discord — no subscription, no checkout, no payment processor."
@@ -23,6 +24,10 @@
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:type" content="image/png" />
+    <meta
+      property="og:image:alt"
+      content="SpoofTrap pricing page — free download with Pro keys distributed via Discord."
+    />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="SpoofTrap | Free vs Pro" />
     <meta
@@ -39,288 +44,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260324b" />
-    <style>
-      .pricing-page {
-        position: relative;
-        z-index: 1;
-        max-width: var(--container);
-        margin: 0 auto;
-        display: grid;
-        gap: 24px;
-        padding-bottom: 84px;
-      }
-
-      .pricing-hero {
-        padding: 34px;
-        border-radius: var(--radius-xl);
-        animation: fadeRise 820ms ease-out both;
-      }
-
-      .pricing-hero h1 {
-        margin: 16px 0 0;
-        max-width: 14ch;
-        line-height: 0.98;
-        letter-spacing: -0.06em;
-        font-size: clamp(3rem, 7vw, 5rem);
-      }
-
-      .pricing-columns {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 22px;
-        align-items: stretch;
-        animation: fadeRise 920ms ease-out both;
-      }
-
-      .pricing-card {
-        display: flex;
-        flex-direction: column;
-        min-height: 100%;
-        padding: 30px;
-        border-radius: var(--radius-xl);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
-      }
-
-      .pricing-card-pro {
-        position: relative;
-        border-color: rgba(125, 232, 255, 0.42);
-        box-shadow:
-          0 0 0 1px rgba(125, 232, 255, 0.1),
-          0 20px 56px rgba(67, 198, 255, 0.12);
-        background:
-          radial-gradient(circle at top right, rgba(125, 232, 255, 0.14), transparent 38%),
-          linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-      }
-
-      .pricing-card-subtitle {
-        display: block;
-        margin-top: 12px;
-        color: var(--muted);
-        font-size: 0.95rem;
-        line-height: 1.45;
-      }
-
-      .pricing-recommended-pill {
-        display: inline-flex;
-        align-items: center;
-        min-height: 26px;
-        padding: 0 10px;
-        border-radius: 999px;
-        font-size: 0.68rem;
-        font-weight: 800;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--accent);
-        border: 1px solid rgba(125, 232, 255, 0.35);
-        background: rgba(125, 232, 255, 0.1);
-      }
-
-      .pricing-tier {
-        display: inline-flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-
-      .pricing-tier-badge {
-        display: inline-flex;
-        align-items: center;
-        min-height: 28px;
-        padding: 0 10px;
-        border-radius: 999px;
-        font-size: 0.72rem;
-        font-weight: 800;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-      }
-
-      .pricing-tier-badge-free {
-        background: rgba(125, 232, 255, 0.14);
-        color: var(--accent);
-      }
-
-      .pricing-tier-badge-pro {
-        background: rgba(125, 232, 255, 0.16);
-        color: var(--accent);
-      }
-
-      .pricing-price {
-        display: block;
-        margin-top: 16px;
-        font-size: clamp(2.4rem, 4vw, 3.4rem);
-        font-weight: 800;
-        letter-spacing: -0.06em;
-        line-height: 1;
-      }
-
-      .pricing-price-pro-label {
-        font-size: clamp(1.35rem, 2.6vw, 1.75rem);
-        letter-spacing: -0.04em;
-        line-height: 1.2;
-      }
-
-      .pricing-price-sub {
-        display: block;
-        margin-top: 8px;
-        color: var(--muted);
-        font-size: 0.95rem;
-      }
-
-      .pricing-card-cta-hint {
-        margin-top: 12px;
-        font-size: 0.82rem;
-        line-height: 1.5;
-        color: var(--subtle);
-        text-align: center;
-      }
-
-      .pricing-cta-pro .button {
-        min-height: 58px;
-        font-size: 1.02rem;
-      }
-
-      .pricing-footnote {
-        max-width: 52rem;
-        margin: 28px auto 0;
-        padding: 0 12px;
-        text-align: center;
-        color: var(--muted);
-        font-size: 0.88rem;
-        line-height: 1.6;
-      }
-
-      .pricing-divider {
-        width: 100%;
-        height: 1px;
-        margin: 24px 0;
-        background: rgba(255, 255, 255, 0.08);
-      }
-
-      .pricing-features {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: grid;
-        gap: 14px;
-        flex: 1;
-      }
-
-      .pricing-features li {
-        display: flex;
-        align-items: flex-start;
-        gap: 12px;
-        font-size: 0.95rem;
-        line-height: 1.5;
-        color: var(--muted);
-      }
-
-      .pricing-features li strong {
-        color: var(--text);
-        font-weight: 600;
-      }
-
-      .pricing-check {
-        flex-shrink: 0;
-        display: grid;
-        place-items: center;
-        width: 22px;
-        height: 22px;
-        margin-top: 1px;
-        border-radius: 999px;
-        font-size: 0.72rem;
-        font-weight: 800;
-      }
-
-      .pricing-check-yes {
-        background: rgba(125, 232, 255, 0.14);
-        color: var(--accent);
-      }
-
-      .pricing-check-pro {
-        background: rgba(125, 232, 255, 0.16);
-        color: var(--accent);
-      }
-
-      .pricing-check-no {
-        background: rgba(255, 255, 255, 0.06);
-        color: rgba(255, 255, 255, 0.25);
-      }
-
-      .pricing-card-cta {
-        margin-top: 28px;
-      }
-
-      .pricing-card-cta .button {
-        width: 100%;
-      }
-
-      .pricing-faq {
-        padding: 30px;
-        border-radius: var(--radius-xl);
-        animation: fadeRise 1050ms ease-out both;
-      }
-
-      .faq-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 18px;
-        margin-top: 24px;
-      }
-
-      .faq-item {
-        padding: 22px;
-        border-radius: 22px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        background: rgba(255, 255, 255, 0.04);
-      }
-
-      .faq-item strong {
-        display: block;
-        letter-spacing: -0.03em;
-        font-size: 1.05rem;
-      }
-
-      .faq-item p {
-        margin: 10px 0 0;
-        color: var(--muted);
-        font-size: 0.92rem;
-        line-height: 1.6;
-      }
-
-      @media (max-width: 1100px) {
-        .pricing-columns,
-        .faq-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      @media (max-width: 760px) {
-        .pricing-hero,
-        .pricing-faq {
-          padding: 22px;
-        }
-
-        .pricing-hero h1 {
-          font-size: clamp(2.4rem, 13vw, 4rem);
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="./styles.css?v=20260420a" />
   </head>
   <body>
     <div class="page-shell">
-      <div class="background-orb orb-one"></div>
-      <div class="background-orb orb-two"></div>
       <div class="background-grid"></div>
 
       <header class="site-header">
         <a class="brand" href="./index.html" aria-label="SpoofTrap home">
-          <img src="./assets/spooftrap-icon.png" alt="SpoofTrap icon" />
-          <span>SpoofTrap</span>
+          <img src="./assets/spooftrap-icon.png" alt="" />
+          <span class="brand-text">SpoofTrap</span>
         </a>
         <nav class="site-nav" aria-label="Primary">
           <a href="./index.html#download">Download</a>
@@ -350,7 +86,7 @@
         <section class="pricing-page">
 
           <section class="pricing-hero glass-panel">
-            <span class="section-tag">Pricing</span>
+            <span class="section-tag">pricing</span>
             <h1>Free to download. Pro from Discord.</h1>
             <p class="hero-text">
               SpoofTrap is free to download. There is no subscription, no checkout, and no monthly or yearly plan.
@@ -358,18 +94,18 @@
               no recurring charges, and no credit card required.
             </p>
             <div class="hero-meta" aria-label="Plan highlights">
-              <span>Free download</span>
-              <span>No subscription</span>
-              <span>Keys in Discord</span>
+              <span>free download</span>
+              <span>no subscription</span>
+              <span>keys in discord</span>
               <span>2 devices per key</span>
             </div>
           </section>
 
           <div class="pricing-columns">
 
-            <div class="pricing-card">
+            <div class="pricing-card reveal">
               <div class="pricing-tier">
-                <span class="pricing-tier-badge pricing-tier-badge-free">Free</span>
+                <span class="pricing-tier-badge pricing-tier-badge-free">free</span>
               </div>
               <span class="pricing-card-subtitle">Download and play. No account required.</span>
               <span class="pricing-price">Free</span>
@@ -417,10 +153,10 @@
               </div>
             </div>
 
-            <div class="pricing-card pricing-card-pro">
+            <div class="pricing-card pricing-card-pro reveal">
               <div class="pricing-tier">
-                <span class="pricing-tier-badge pricing-tier-badge-pro">Pro</span>
-                <span class="pricing-recommended-pill">Recommended</span>
+                <span class="pricing-tier-badge pricing-tier-badge-pro">pro</span>
+                <span class="pricing-recommended-pill">recommended</span>
               </div>
               <span class="pricing-card-subtitle">Unlocked with a key from Discord.</span>
               <span class="pricing-price pricing-price-pro-label">Ask in Discord</span>
@@ -482,7 +218,7 @@
                   Join Discord
                 </a>
                 <p class="pricing-card-cta-hint">
-                  Open a ticket or DM Grant. Usually replied within 24h.
+                  Open a ticket in Discord. Usually replied within 24h.
                 </p>
               </div>
             </div>
@@ -494,31 +230,30 @@
           </p>
 
           <section class="pricing-faq glass-panel">
-            <span class="section-tag">FAQ</span>
-            <h2 style="margin: 16px 0 0; font-size: clamp(2rem, 4vw, 3rem); line-height: 0.98; letter-spacing: -0.06em;">
-              Common questions.
-            </h2>
+            <span class="section-tag">faq</span>
+            <h2>Common questions.</h2>
+            <div class="section-rule"></div>
 
             <div class="faq-grid">
-              <div class="faq-item">
+              <div class="faq-item reveal">
                 <strong>How do I get a Pro key?</strong>
                 <p>
-                  Join the Discord, open a ticket in <strong>#how-to-get-pro</strong> or DM Grant directly. Tell us your platform (macOS or Windows). Most keys are issued within 24 hours.
+                  Join the Discord and open a ticket in <strong>#how-to-get-pro</strong>. Tell us your platform (macOS or Windows). Most keys are issued within 24 hours.
                 </p>
               </div>
-              <div class="faq-item">
+              <div class="faq-item reveal">
                 <strong>Does it cost money?</strong>
                 <p>
                   No payment processor, no subscription. Keys are issued by hand. If you want to support the project, the best thing you can do is post about SpoofTrap on TikTok, YouTube, or Reddit and share the link in <strong>#community-content</strong> — that earns you a Pro key on the spot.
                 </p>
               </div>
-              <div class="faq-item">
+              <div class="faq-item reveal">
                 <strong>How many devices does one key activate?</strong>
                 <p>
                   Two. You can use one Mac and one Windows machine, or two of either. If you need to move to a new computer, ask in Discord and we&apos;ll deactivate the old one.
                 </p>
               </div>
-              <div class="faq-item">
+              <div class="faq-item reveal">
                 <strong>What if my key stops working?</strong>
                 <p>Open a ticket in Discord and we&apos;ll fix it.</p>
               </div>
@@ -527,6 +262,37 @@
 
         </section>
       </main>
+
+      <script src="./animations.js?v=20260420a" defer></script>
+
+      <footer class="site-footer">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a class="brand" href="./index.html" aria-label="SpoofTrap home">
+              <img src="./assets/spooftrap-icon.png" alt="" />
+              <span class="brand-text">SpoofTrap</span>
+            </a>
+            <p class="footer-tagline">Roblox launcher for restricted networks. Free, open source, made for school and shared networks that block normal access.</p>
+          </div>
+          <div class="footer-col">
+            <span class="footer-col-title">product</span>
+            <a href="./index.html#download">Download</a>
+            <a href="./macos.html">macOS</a>
+            <a href="./windows.html">Windows</a>
+            <a href="./pricing.html">Pricing</a>
+          </div>
+          <div class="footer-col">
+            <span class="footer-col-title">connect</span>
+            <a href="https://github.com/spooftrap-app/SpoofTrap" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://discord.gg/32UmsRfVha" target="_blank" rel="noreferrer">Discord</a>
+            <a href="./socials.html">All socials</a>
+          </div>
+        </div>
+        <div class="footer-meta">
+          <span>// © 2026 SpoofTrap</span>
+          <span>not affiliated with Roblox Corporation</span>
+        </div>
+      </footer>
     </div>
   </body>
 </html>

@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SpoofTrap | macOS</title>
+    <meta name="theme-color" content="#070d18" />
+    <title>SpoofTrap — macOS</title>
     <meta
       name="description"
       content="See the current SpoofTrap macOS release, a larger app screenshot, and the promo video in one page."
@@ -43,21 +44,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260324b" />
+    <link rel="stylesheet" href="./styles.css?v=20260420a" />
   </head>
   <body>
     <div class="page-shell">
-      <div class="background-orb orb-one"></div>
-      <div class="background-orb orb-two"></div>
       <div class="background-grid"></div>
 
       <header class="site-header">
         <a class="brand" href="./index.html" aria-label="SpoofTrap home">
-          <img src="./assets/spooftrap-icon.png" alt="SpoofTrap icon" />
-          <span>SpoofTrap</span>
+          <img src="./assets/spooftrap-icon.png" alt="" />
+          <span class="brand-text">SpoofTrap</span>
         </a>
         <nav class="site-nav" aria-label="Primary">
           <a href="./index.html#download">Download</a>
@@ -87,7 +86,7 @@
         <section class="macos-page">
           <section class="macos-hero glass-panel">
             <div class="macos-hero-copy">
-              <span class="section-tag">macOS</span>
+              <span class="section-tag">macos</span>
               <h1>The current macOS release, the real app, and the promo in one place.</h1>
               <p class="hero-text">
                 This page keeps the macOS side simple: current release info,
@@ -95,9 +94,9 @@
                 you jump around the site.
               </p>
               <div class="hero-meta" aria-label="macOS page highlights">
-                <span>Current release</span>
-                <span>Bigger app screenshot</span>
-                <span>Promo video</span>
+                <span>current release</span>
+                <span>bigger screenshot</span>
+                <span>promo video</span>
               </div>
               <div class="hero-actions">
                 <a class="button button-primary" id="macos-dmg-hero" href="./dist/SpoofTrap.dmg" download>
@@ -110,7 +109,7 @@
             </div>
 
             <article class="macos-update-card">
-              <span class="social-kicker">Current Update</span>
+              <span class="social-kicker">current update</span>
               <h2 id="macos-version-label">v1.7.2</h2>
               <p id="macos-generated-at">Bundled spoofdpi in every download — signed DMG, ZIP, PKG.</p>
               <div class="macos-update-grid">
@@ -135,18 +134,19 @@
                   Download PKG
                 </a>
               </div>
-              <div class="install-note" style="margin-top: 16px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
-                <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin: 0 0 8px 0;"><strong style="color: #fff;">First time opening?</strong> macOS may block the app.</p>
-                <p style="font-size: 12px; color: rgba(255,255,255,0.5); margin: 0;">Right-click the app → Open → Click "Open" in the dialog. Or run in Terminal:</p>
-                <code style="display: block; margin-top: 8px; padding: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; font-size: 11px; color: #7dd3fc; word-break: break-all;">xattr -cr /Applications/SpoofTrap.app && open /Applications/SpoofTrap.app</code>
+              <div class="install-note">
+                <p><strong>First time opening?</strong> macOS may block the app.</p>
+                <p>Right-click the app → Open → Click "Open" in the dialog. Or run in Terminal:</p>
+                <code>xattr -cr /Applications/SpoofTrap.app &amp;&amp; open /Applications/SpoofTrap.app</code>
               </div>
             </article>
           </section>
 
-          <section class="macos-proof glass-panel">
+          <section class="macos-proof glass-panel reveal">
             <div class="section-heading section-heading-compact">
-              <span class="section-tag">App Screenshot</span>
+              <span class="section-tag">app screenshot</span>
               <h2>See the real macOS workspace larger.</h2>
+              <div class="section-rule"></div>
               <p>The full launch workspace, status surface, and session log in one view.</p>
             </div>
             <div class="macos-proof-frame">
@@ -157,10 +157,11 @@
             </div>
           </section>
 
-          <section class="macos-video glass-panel">
+          <section class="macos-video glass-panel reveal">
             <div class="section-heading section-heading-compact">
-              <span class="section-tag">Promo Video</span>
+              <span class="section-tag">promo video</span>
               <h2>Watch the macOS flow.</h2>
+              <div class="section-rule"></div>
               <p>The quickest walkthrough if you want to see the product before you download it.</p>
             </div>
             <div class="macos-video-frame">
@@ -178,8 +179,38 @@
           </section>
         </section>
       </main>
+
+      <footer class="site-footer">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a class="brand" href="./index.html" aria-label="SpoofTrap home">
+              <img src="./assets/spooftrap-icon.png" alt="" />
+              <span class="brand-text">SpoofTrap</span>
+            </a>
+            <p class="footer-tagline">Roblox launcher for restricted networks. Free, open source, made for school and shared networks that block normal access.</p>
+          </div>
+          <div class="footer-col">
+            <span class="footer-col-title">product</span>
+            <a href="./index.html#download">Download</a>
+            <a href="./macos.html">macOS</a>
+            <a href="./windows.html">Windows</a>
+            <a href="./pricing.html">Pricing</a>
+          </div>
+          <div class="footer-col">
+            <span class="footer-col-title">connect</span>
+            <a href="https://github.com/spooftrap-app/SpoofTrap" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://discord.gg/32UmsRfVha" target="_blank" rel="noreferrer">Discord</a>
+            <a href="./socials.html">All socials</a>
+          </div>
+        </div>
+        <div class="footer-meta">
+          <span>// © 2026 SpoofTrap</span>
+          <span>not affiliated with Roblox Corporation</span>
+        </div>
+      </footer>
     </div>
 
-    <script src="./macos.js?v=20260324a"></script>
+    <script src="./macos.js?v=20260420a"></script>
+    <script src="./animations.js?v=20260420a" defer></script>
   </body>
 </html>

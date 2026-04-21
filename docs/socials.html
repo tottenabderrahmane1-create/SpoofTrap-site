@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SpoofTrap | Socials</title>
+    <meta name="theme-color" content="#070d18" />
+    <title>SpoofTrap — Socials</title>
     <meta
       name="description"
       content="Follow SpoofTrap on Discord, Instagram, and YouTube."
@@ -40,21 +41,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260324b" />
+    <link rel="stylesheet" href="./styles.css?v=20260420a" />
   </head>
   <body>
     <div class="page-shell">
-      <div class="background-orb orb-one"></div>
-      <div class="background-orb orb-two"></div>
       <div class="background-grid"></div>
 
       <header class="site-header">
         <a class="brand" href="./index.html" aria-label="SpoofTrap home">
-          <img src="./assets/spooftrap-icon.png" alt="SpoofTrap icon" />
-          <span>SpoofTrap</span>
+          <img src="./assets/spooftrap-icon.png" alt="" />
+          <span class="brand-text">SpoofTrap</span>
         </a>
         <nav class="site-nav" aria-label="Primary">
           <a href="./index.html#download">Download</a>
@@ -82,7 +81,7 @@
 
       <main>
         <section class="social-hero glass-panel">
-          <span class="section-tag">Socials</span>
+          <span class="section-tag">socials</span>
           <h1>Follow SpoofTrap outside the launcher.</h1>
           <p class="hero-text">
             Keep up with releases, clips, updates, and community posts across the
@@ -92,7 +91,7 @@
 
         <section class="social-grid">
           <article class="social-card glass-panel instagram-card">
-            <span class="social-kicker">Instagram</span>
+            <span class="social-kicker">instagram</span>
             <h2>@spooftrap</h2>
             <p>
               Visual updates, branded posts, announcements, and quick promo
@@ -109,7 +108,7 @@
           </article>
 
           <article class="social-card glass-panel youtube-card">
-            <span class="social-kicker">YouTube</span>
+            <span class="social-kicker">youtube</span>
             <h2>@SpoofTrap</h2>
             <p>
               Videos, demonstrations, walkthroughs, and release content from the
@@ -126,6 +125,37 @@
           </article>
         </section>
       </main>
+
+      <script src="./animations.js?v=20260420a" defer></script>
+
+      <footer class="site-footer">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a class="brand" href="./index.html" aria-label="SpoofTrap home">
+              <img src="./assets/spooftrap-icon.png" alt="" />
+              <span class="brand-text">SpoofTrap</span>
+            </a>
+            <p class="footer-tagline">Roblox launcher for restricted networks. Free, open source, made for school and shared networks that block normal access.</p>
+          </div>
+          <div class="footer-col">
+            <span class="footer-col-title">product</span>
+            <a href="./index.html#download">Download</a>
+            <a href="./macos.html">macOS</a>
+            <a href="./windows.html">Windows</a>
+            <a href="./pricing.html">Pricing</a>
+          </div>
+          <div class="footer-col">
+            <span class="footer-col-title">connect</span>
+            <a href="https://github.com/spooftrap-app/SpoofTrap" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://discord.gg/32UmsRfVha" target="_blank" rel="noreferrer">Discord</a>
+            <a href="./socials.html">All socials</a>
+          </div>
+        </div>
+        <div class="footer-meta">
+          <span>// © 2026 SpoofTrap</span>
+          <span>not affiliated with Roblox Corporation</span>
+        </div>
+      </footer>
     </div>
   </body>
 </html>

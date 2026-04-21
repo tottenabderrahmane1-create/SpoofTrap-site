@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SpoofTrap | Windows Public Beta</title>
+    <meta name="theme-color" content="#070d18" />
+    <title>SpoofTrap — Windows public beta</title>
     <meta
       name="description"
       content="SpoofTrap for Windows is available as a public beta. Read the warning, download with care, and check Discord for notes and updates."
@@ -43,21 +44,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260324b" />
+    <link rel="stylesheet" href="./styles.css?v=20260420a" />
   </head>
   <body>
     <div class="page-shell">
-      <div class="background-orb orb-one"></div>
-      <div class="background-orb orb-two"></div>
       <div class="background-grid"></div>
 
       <header class="site-header">
         <a class="brand" href="./index.html" aria-label="SpoofTrap home">
-          <img src="./assets/spooftrap-icon.png" alt="SpoofTrap icon" />
-          <span>SpoofTrap</span>
+          <img src="./assets/spooftrap-icon.png" alt="" />
+          <span class="brand-text">SpoofTrap</span>
         </a>
         <nav class="site-nav" aria-label="Primary">
           <a href="./index.html#download">Download</a>
@@ -87,7 +86,7 @@
         <section class="windows-page">
           <section class="windows-hero glass-panel">
             <div class="windows-hero-copy">
-              <span class="section-tag">Windows Public Beta</span>
+              <span class="section-tag">windows public beta</span>
               <h1>Windows is available in public beta, and it is still rough.</h1>
               <p class="hero-text">
                 SpoofTrap for Windows is out as a public beta. Please go in
@@ -96,10 +95,10 @@
                 download or check Discord for the latest notes and updates.
               </p>
               <div class="hero-meta" aria-label="Windows beta status">
-                <span>Public beta</span>
-                <span>AS IS</span>
-                <span>Direct download</span>
-                <span>Discord updates</span>
+                <span>public beta</span>
+                <span>as-is</span>
+                <span>direct download</span>
+                <span>discord updates</span>
               </div>
               <div class="hero-actions">
                 <a class="button button-primary" href="https://bit.ly/4bY0AZj" target="_blank" rel="noreferrer">
@@ -151,8 +150,8 @@
           </section>
 
           <section class="windows-highlights">
-            <article class="windows-card glass-panel">
-              <span class="social-kicker">Beta Notice</span>
+            <article class="windows-card glass-panel reveal">
+              <span class="social-kicker">beta notice</span>
               <h2>What you should expect before you try it</h2>
               <ul class="windows-list">
                 <li>This is a beta build and may contain bugs, broken flows, install issues, or missing polish</li>
@@ -161,8 +160,8 @@
               </ul>
             </article>
 
-            <article class="windows-card glass-panel windows-card-accent">
-              <span class="social-kicker">Get It</span>
+            <article class="windows-card glass-panel reveal windows-card-accent" data-reveal-delay="1">
+              <span class="social-kicker">get it</span>
               <h2>Download it here or check Discord first</h2>
               <p>
                 Use the direct beta download if you want to try it now, and use
@@ -192,27 +191,28 @@
 
           <section class="windows-roadmap glass-panel">
             <div class="section-heading section-heading-compact">
-              <span class="section-tag">Terms Notice</span>
+              <span class="section-tag">terms notice</span>
               <h2>Beta warning and release terms</h2>
+              <div class="section-rule"></div>
               <p>This is product-facing caution language, not legal advice, but it gives the right expectations before someone downloads.</p>
             </div>
             <div class="roadmap-steps">
-              <article class="roadmap-step is-active">
+              <article class="roadmap-step reveal is-active">
                 <span class="roadmap-step-state">1</span>
                 <strong>Pre-release software</strong>
                 <p>This Windows build is pre-release software and is not represented as final, complete, polished, or fully stable.</p>
               </article>
-              <article class="roadmap-step">
+              <article class="roadmap-step reveal">
                 <span class="roadmap-step-state">2</span>
                 <strong>No warranty</strong>
                 <p>To the maximum extent permitted by applicable law, the Windows beta is provided AS IS and AS AVAILABLE, without warranties of any kind, whether express or implied.</p>
               </article>
-              <article class="roadmap-step">
+              <article class="roadmap-step reveal">
                 <span class="roadmap-step-state">3</span>
                 <strong>Assumption of risk</strong>
                 <p>By downloading, installing, or using the beta, the user assumes all risks associated with testing pre-release software, including bugs, crashes, instability, incomplete features, and potential data or configuration issues.</p>
               </article>
-              <article class="roadmap-step">
+              <article class="roadmap-step reveal">
                 <span class="roadmap-step-state">4</span>
                 <strong>Changes without notice</strong>
                 <p>The beta may be modified, suspended, replaced, or discontinued at any time without notice, and Discord remains the best place to check for follow-up notes and release chatter.</p>
@@ -222,7 +222,7 @@
 
           <section class="windows-form-grid">
             <article class="windows-form-card glass-panel" id="beta-form">
-              <span class="social-kicker">Download</span>
+              <span class="social-kicker">download</span>
               <h2>Download the Windows beta</h2>
               <p>
                 If you want to try it, use the direct beta link below. Please
@@ -250,7 +250,7 @@
             </article>
 
             <article class="windows-form-card glass-panel windows-form-card-accent" id="notify-form">
-              <span class="social-kicker">Discord</span>
+              <span class="social-kicker">discord</span>
               <h2>Check Discord for warnings, updates, and chatter</h2>
               <p>
                 Discord is the best place to keep up with install notes,
@@ -284,6 +284,37 @@
           </section>
         </section>
       </main>
+
+      <script src="./animations.js?v=20260420a" defer></script>
+
+      <footer class="site-footer">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a class="brand" href="./index.html" aria-label="SpoofTrap home">
+              <img src="./assets/spooftrap-icon.png" alt="" />
+              <span class="brand-text">SpoofTrap</span>
+            </a>
+            <p class="footer-tagline">Roblox launcher for restricted networks. Free, open source, made for school and shared networks that block normal access.</p>
+          </div>
+          <div class="footer-col">
+            <span class="footer-col-title">product</span>
+            <a href="./index.html#download">Download</a>
+            <a href="./macos.html">macOS</a>
+            <a href="./windows.html">Windows</a>
+            <a href="./pricing.html">Pricing</a>
+          </div>
+          <div class="footer-col">
+            <span class="footer-col-title">connect</span>
+            <a href="https://github.com/spooftrap-app/SpoofTrap" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://discord.gg/32UmsRfVha" target="_blank" rel="noreferrer">Discord</a>
+            <a href="./socials.html">All socials</a>
+          </div>
+        </div>
+        <div class="footer-meta">
+          <span>// © 2026 SpoofTrap</span>
+          <span>not affiliated with Roblox Corporation</span>
+        </div>
+      </footer>
     </div>
   </body>
 </html>
