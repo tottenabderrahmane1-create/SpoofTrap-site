@@ -3508,7 +3508,7 @@ img {
 .first-run-steps li {
   display: flex;
   gap: 12px;
-  align-items: flex-start;
+  align-items: center;
   padding: 12px;
   border-radius: var(--radius-sm);
   background: var(--surface-2);
@@ -3519,8 +3519,9 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
   background: rgba(125, 232, 255, 0.10);
   border: 1px solid var(--border-default);
@@ -3528,7 +3529,11 @@ img {
   font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 600;
+  line-height: 1;
+  text-align: center;
   flex-shrink: 0;
+  padding: 0;
+  font-variant-numeric: tabular-nums;
 }
 
 .first-run-steps strong {
